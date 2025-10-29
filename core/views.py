@@ -13,8 +13,6 @@ import io
 from PIL import Image
 import os
 import uuid
-from google import genai
-from google.genai import types
 
 from .models import CreditTransaction, GeneratedImage
 from .serializers import (
@@ -135,46 +133,53 @@ class GenerateImageView(APIView):
         description = serializer.validated_data.get('description', '')
         
         try:
-            # Initialize Google Gemini client
-            client = genai.Client(api_key=settings.GEMINI_API_KEY)
-            
             # Open the uploaded image
             uploaded_image = Image.open(image)
             
-            # Create detailed prompt for Gemini with inpainting
-            prompt_parts = [
-                f"Using the provided image of a {room_type if room_type else 'room'} interior,",
-                f"change the entire room design to {style} style.",
-                "Keep the exact room layout, floor plan, windows and doors positions unchanged.",
-                "Preserve the architectural elements, dimensions, and proportions.",
-                "Maintain realistic proportions, natural lighting, and professional interior design quality.",
-                "Only change the furniture, decor, colors, materials, and styling while keeping all structural elements identical."
-            ]
+            # Convert to RGB if necessary (remove alpha channel for compatibility)
+            if uploaded_image.mode in ('RGBA', 'LA'):
+                rgb_image = Image.new('RGB', uploaded_image.size, (255, 255, 255))
+                rgb_image.paste(uploaded_image, mask=uploaded_image.split()[-1] if uploaded_image.mode == 'RGBA' else None)
+                uploaded_image = rgb_image
+            
+            # Save image to bytes for API
+            image_bytes = io.BytesIO()
+            uploaded_image.save(image_bytes, format='PNG')
+            image_bytes.seek(0)
+            
+            # Create detailed prompt for DALL·E 3
+            prompt = f"A professional interior design rendering of this {room_type if room_type else 'room'} redesigned in {style} style"
             
             if description:
-                prompt_parts.insert(-1, f"Following these specific requirements: {description}")
+                prompt += f". {description}"
             
-            text_input = " ".join(prompt_parts)
+            prompt += ". High quality, realistic interior design with professional lighting and attention to detail."
             
-            # Generate image using Gemini with inpainting
-            response = client.models.generate_content(
-                model="gemini-2.5-flash-image",
-                contents=[uploaded_image, text_input],
+            # Initialize OpenAI client
+            client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
+            
+            # Generate image using DALL·E 3
+            response = client.images.generate(
+                model="dall-e-3",
+                prompt=prompt,
+                size="1024x1024",
+                quality="standard",
+                n=1,
             )
             
-            # Extract image data from response
-            image_parts = [
-                part.inline_data.data
-                for part in response.candidates[0].content.parts
-                if part.inline_data
-            ]
+            # Download the generated image
+            image_url = response.data[0].url
+            generated_image_response = requests.get(image_url)
             
-            if not image_parts:
-                raise Exception("No image data received from Gemini API")
+            if generated_image_response.status_code != 200:
+                raise Exception("Failed to download generated image from OpenAI")
             
             # Save the generated image
             generated_image_name = f"generated_{uuid.uuid4().hex}.png"
-            generated_image_file = ContentFile(image_parts[0], name=generated_image_name)
+            generated_image_file = ContentFile(
+                generated_image_response.content,
+                name=generated_image_name
+            )
             
             # Create GeneratedImage instance
             generated_image = GeneratedImage.objects.create(

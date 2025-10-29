@@ -59,7 +59,7 @@
         </a>
         <div class="flex items-center space-x-4">
             <div class="flex items-center bg-gray-100 px-4 py-2 rounded-lg">
-                <span class="text-sm text-gray-600 mr-2">Үнэгүй төлөвлөгөө</span>
+                <span class="text-sm text-gray-600 mr-2">Free plan</span>
                 <span class="text-sm font-semibold text-gray-900">Кредит: <span id="credit-balance">3</span></span>
             </div>
             <button onclick="logout()" class="text-gray-600 hover:text-gray-900">
@@ -580,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Function to build prompt for Gemini Inpainting
+    // Function to build prompt for DALL·E 3
     function buildPrompt(roomType, style, description) {
         const promptParts = [
             `Using the provided image of a ${roomType || 'room'} interior,`,
