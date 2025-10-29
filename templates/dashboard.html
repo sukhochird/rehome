@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - ReHome{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Your Dashboard</h1>
+    <p class="mt-2 text-gray-600">Manage your designs and credits</p>
+</div>
+
+<!-- Credit Balance Card -->
+<div class="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg shadow-lg p-6 mb-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-white">Credits</h2>
+            <p class="text-primary-100">Available for image generation</p>
+        </div>
+        <div class="text-right">
+            <div class="text-4xl font-bold text-white" id="credit-balance">Loading...</div>
+            <button onclick="purchaseCredits()" class="mt-2 bg-white text-primary-600 px-4 py-2 rounded-md font-medium hover:bg-primary-50 transition-colors">
+                Buy More Credits
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Purchase Credits Modal -->
+<div id="purchase-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Purchase Credits</h3>
+                <p class="text-gray-600 mb-4">
+                    Get 10 credits for 5,000 MNT to continue generating amazing designs.
+                </p>
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closePurchaseModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        Cancel
+                    </button>
+                    <button onclick="confirmPurchase()" class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">
+                        Purchase 10 Credits
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <a href="/" class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+        <div class="flex items-center">
+            <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-gray-900">New Design</h3>
+                <p class="text-gray-600">Generate a new room design</p>
+            </div>
+        </div>
+    </a>
+    
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-gray-900">Total Designs</h3>
+                <p class="text-gray-600" id="total-designs">Loading...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-gray-900">Credits Used</h3>
+                <p class="text-gray-600" id="credits-used">Loading...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Transactions -->
+<div class="bg-white rounded-lg shadow-md mb-8">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900">Recent Transactions</h3>
+    </div>
+    <div class="divide-y divide-gray-200" id="transactions-list">
+        <!-- Transactions will be loaded here -->
+    </div>
+</div>
+
+<!-- Generated Images -->
+<div class="bg-white rounded-lg shadow-md">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900">Your Generated Designs</h3>
+    </div>
+    <div class="p-6">
+        <div id="images-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Images will be loaded here -->
+        </div>
+        <div id="no-images" class="text-center py-12 hidden">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No designs yet</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by creating your first design.</p>
+            <div class="mt-6">
+                <a href="/" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+                    Create Your First Design
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboardData();
+});
+
+async function loadDashboardData() {
+    try {
+        const response = await fetch('/api/dashboard/');
+        const data = await response.json();
+        
+        // Update credit balance
+        document.getElementById('credit-balance').textContent = data.credit_balance;
+        
+        // Update stats
+        document.getElementById('total-designs').textContent = data.generated_images.length;
+        
+        // Calculate credits used
+        const creditsUsed = data.recent_transactions.filter(t => t.transaction_type === 'use')
+            .reduce((sum, t) => sum + t.amount, 0);
+        document.getElementById('credits-used').textContent = creditsUsed;
+        
+        // Load transactions
+        loadTransactions(data.recent_transactions);
+        
+        // Load images
+        loadImages(data.generated_images);
+        
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+    }
+}
+
+function loadTransactions(transactions) {
+    const container = document.getElementById('transactions-list');
+    
+    if (transactions.length === 0) {
+        container.innerHTML = '<div class="px-6 py-4 text-gray-500 text-center">No transactions yet</div>';
+        return;
+    }
+    
+    container.innerHTML = transactions.map(transaction => {
+        const typeClass = transaction.transaction_type === 'add' ? 'text-green-600' : 'text-red-600';
+        const typeIcon = transaction.transaction_type === 'add' ? '+' : '-';
+        const date = new Date(transaction.created_at).toLocaleDateString();
+        
+        return `
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                            <span class="text-sm font-medium ${typeClass}">${typeIcon}</span>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-900">${transaction.description}</p>
+                        <p class="text-sm text-gray-500">${date}</p>
+                    </div>
+                </div>
+                <div class="text-sm ${typeClass} font-medium">
+                    ${typeIcon}${transaction.amount} credits
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function loadImages(images) {
+    const container = document.getElementById('images-grid');
+    const noImages = document.getElementById('no-images');
+    
+    if (images.length === 0) {
+        container.classList.add('hidden');
+        noImages.classList.remove('hidden');
+        return;
+    }
+    
+    container.classList.remove('hidden');
+    noImages.classList.add('hidden');
+    
+    container.innerHTML = images.map(image => {
+        const date = new Date(image.created_at).toLocaleDateString();
+        
+        return `
+            <div class="bg-gray-50 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                <div class="aspect-w-16 aspect-h-12 bg-gray-200">
+                    <img src="${image.generated_image}" alt="Generated design" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h4 class="text-sm font-medium text-gray-900 capitalize">${image.style} Style</h4>
+                    <p class="text-sm text-gray-500 mt-1">${date}</p>
+                    <button onclick="showComparison('${image.original_image}', '${image.generated_image}', '${image.style}')" 
+                            class="mt-2 text-primary-600 hover:text-primary-700 text-sm font-medium">
+                        View Comparison
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function showComparison(originalImage, generatedImage, style) {
+    // Create modal for comparison
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center p-4';
+    modal.innerHTML = `
+        <div class="bg-white rounded-lg max-w-4xl w-full max-h-full overflow-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">${style} Style Comparison</h3>
+                    <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="relative bg-gray-100 rounded-lg overflow-hidden">
+                    <div class="relative w-full h-96">
+                        <div class="absolute inset-0 overflow-hidden">
+                            <img src="${originalImage}" alt="Original" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute inset-0 overflow-hidden" style="clip-path: inset(0 50% 0 0);">
+                            <img src="${generatedImage}" alt="Generated" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"></div>
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-full bg-white shadow-lg"></div>
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-move">
+                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                            </svg>
+                        </div>
+                        <div class="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                            Original
+                        </div>
+                        <div class="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                            ${style} Style
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add slider functionality
+    const slider = modal.querySelector('.absolute.top-1/2');
+    const afterImage = modal.querySelector('div:nth-child(2)');
+    let isDragging = false;
+
+    slider.addEventListener('mousedown', () => isDragging = true);
+    document.addEventListener('mouseup', () => isDragging = false);
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const container = modal.querySelector('.relative.w-full');
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percentage = (x / rect.width) * 100;
+        const clampedPercentage = Math.max(0, Math.min(100, percentage));
+        
+        afterImage.style.clipPath = `inset(0 ${100 - clampedPercentage}% 0 0)`;
+        slider.style.left = `${clampedPercentage}%`;
+    });
+}
+
+function purchaseCredits() {
+    document.getElementById('purchase-modal').classList.remove('hidden');
+}
+
+function closePurchaseModal() {
+    document.getElementById('purchase-modal').classList.add('hidden');
+}
+
+async function confirmPurchase() {
+    try {
+        const response = await fetch('/api/purchase-credits/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify({
+                amount: 10
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            closePurchaseModal();
+            loadDashboardData(); // Reload data
+            alert('Successfully purchased 10 credits!');
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
+}
+</script>
+{% endblock %}

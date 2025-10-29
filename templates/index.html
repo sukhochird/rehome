@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReGer AI - Өрөөний дизайн үүсгэх</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Authentication check
+    fetch('/api/dashboard/')
+        .then(response => {
+            if (!response.ok) {
+                window.location.href = '/';
+            }
+        })
+        .catch(() => {
+            window.location.href = '/';
+        });
+</script>
+
+<!-- Site Header -->
+<header class="bg-white border-b border-gray-200 h-16 fixed top-0 left-0 right-0 z-10">
+    <div class="max-w-7xl mx-auto px-8 h-full flex justify-between items-center">
+        <a href="/" class="flex items-center hover:opacity-80 transition-opacity">
+            <div class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
+                <span class="text-white font-bold text-sm">G</span>
+            </div>
+            <span class="ml-2 text-xl font-bold text-gray-900">ReGer</span>
+        </a>
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center bg-gray-100 px-4 py-2 rounded-lg">
+                <span class="text-sm text-gray-600 mr-2">Үнэгүй төлөвлөгөө</span>
+                <span class="text-sm font-semibold text-gray-900">Кредит: <span id="credit-balance">3</span></span>
+            </div>
+            <button onclick="logout()" class="text-gray-600 hover:text-gray-900">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content Area -->
+<div class="min-h-screen bg-white pt-16">
+    <div class="max-w-7xl mx-auto px-8 py-8">
+        <div class="flex gap-8">
+            <!-- Side Menu -->
+            <aside class="w-64 bg-white flex-shrink-0 self-start sticky top-24">
+                <nav class="flex-1 p-4 space-y-1">
+                    <a href="/app/" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Нүүр</span>
+                    </a>
+                    <a href="/app/" class="flex items-center px-4 py-2.5 bg-orange-50 text-orange-600 rounded-lg">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Render</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Сайжруулах</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Өнгөт болгох</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Байршуулах</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Засварлах</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Moodboard</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Видео</span>
+                    </a>
+                </nav>
+
+                <!-- Secondary Navigation -->
+                <div class="p-4 border-t border-gray-200 space-y-1">
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Заавар</span>
+                    </a>
+                    <a href="/dashboard/" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Түүх</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Аккаунт</span>
+                    </a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1">
+                <div class="space-y-8">
+            <!-- Page Title -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Хурдан Render</h1>
+            </div>
+            
+            <!-- Upload Image Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-900">1. Зураг байршуулах</h2>
+                    </div>
+
+                    <!-- Recent Images -->
+                    <div id="recent-images-container" class="mb-4 hidden">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Сүүлийн upload хийсэн зураг</p>
+                        <div class="flex space-x-3" id="recent-images-list">
+                            <!-- Recent images will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Upload Area -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-gray-400 transition-colors cursor-pointer" id="upload-area">
+                        <label for="image" class="cursor-pointer">
+                            <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <p class="text-lg font-semibold text-gray-900 mb-2">Зураг байршуулах</p>
+                            <p class="text-sm text-gray-500 mb-1">эсвэл файл буулга</p>
+                            <p class="text-xs text-gray-400">Бид JPG, JPEG, PNG дэмжиж байна</p>
+                            <input id="image" name="image" type="file" class="sr-only" accept="image/*" required>
+                        </label>
+                    </div>
+                    <div id="image-preview" class="mt-4 hidden">
+                        <img id="preview-img" class="max-w-full h-64 object-cover rounded-lg mx-auto" alt="Урьдчилсан харалт">
+                    </div>
+                </div>
+
+                <!-- Room Type Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">2. Өрөөний төрөл сонгох</h2>
+                    
+                    <!-- Dropdown Button -->
+                    <button id="room-type-dropdown" class="w-full px-4 py-3 border-2 border-orange-500 rounded-lg text-left flex justify-between items-center mb-4">
+                        <span id="selected-room-text" class="text-gray-700">Өрөөний төрөл сонго...</span>
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <!-- Two-Column Selection Menu -->
+                    <div id="room-type-menu" class="hidden border border-gray-300 rounded-lg overflow-hidden">
+                        <div class="flex h-96">
+                            <!-- Left Column: Categories -->
+                            <div id="category-column" class="w-1/3 bg-gray-50 border-r border-gray-300 overflow-y-auto">
+                                <!-- Categories will be loaded dynamically -->
+                            </div>
+                            
+                            <!-- Right Column: Room Types -->
+                            <div id="room-types-column" class="w-2/3 bg-white overflow-y-auto">
+                                <!-- Room types will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interior Style Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">3. Интерьерийн хэв маяг сонгох</h2>
+                    
+                    <div id="interior-style-container" class="grid grid-cols-3 gap-4">
+                        <!-- Interior styles will be loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Add Details Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">4. Дэлгэрэнгүй мэдээлэл нэмэх</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">Дизайнаа тайлбарла!</label>
+                            <textarea id="description" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent" rows="3" placeholder="Жишээ: Орчин үеийн гостийн өрөө том цонхтой, саармаг өнгөтэй"></textarea>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4">
+                    <div class="text-sm text-gray-600">
+                        <span class="font-medium">Зардал:</span> 1 кредит
+                            </div>
+                            <button id="render-btn" type="button" class="bg-gray-900 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                                <span id="submit-text">Render</span>
+                                <span id="loading-text" class="hidden">Render хийж байна...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt Preview Section -->
+                <div id="prompt-preview" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hidden">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Prompt Preview</h3>
+                    <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                        <p id="prompt-text" class="text-sm text-gray-700"></p>
+                    </div>
+                    <button id="confirm-render-btn" class="w-full bg-gray-900 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-200">
+                        DALL-E-3 руу илгээх
+                    </button>
+                </div>
+
+                <!-- Result Section -->
+                <div id="result" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hidden">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Таны үүсгэсэн дизайн</h3>
+                <div id="comparison-container" class="relative bg-gray-100 rounded-lg overflow-hidden">
+                    <!-- Before/After comparison will be inserted here -->
+                </div>
+                <div class="mt-4 flex justify-center">
+                        <a href="/dashboard/" class="text-gray-900 hover:text-gray-700 font-medium">Танхимд харах →</a>
+                    </div>
+                </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+    const uploadArea = document.getElementById('upload-area');
+    const submitText = document.getElementById('submit-text');
+    const loadingText = document.getElementById('loading-text');
+    const result = document.getElementById('result');
+    const renderBtn = document.getElementById('render-btn');
+
+    // Room type data with English translations
+    const roomTypes = {
+        "Амьдрах орон зай": [
+            { "mn": "Зочны өрөө", "en": "Living Room" },
+            { "mn": "Гэр бүлийн өрөө", "en": "Family Room" },
+            { "mn": "Амралтын хэсэг", "en": "Lounge Area" },
+            { "mn": "Хүүхдийн өрөө", "en": "Kids Room" },
+            { "mn": "Унтлагын өрөө", "en": "Bedroom" },
+            { "mn": "Гал тогоо, хоолны өрөөний нэгдсэн хэсэг", "en": "Open Kitchen Dining" }
+        ],
+        "Унтах ба хувийн арчилгаа": [
+            { "mn": "Унтлагын өрөө", "en": "Bedroom" },
+            { "mn": "Мастер унтлагын өрөө", "en": "Master Bedroom" },
+            { "mn": "Хүүхдийн унтлагын өрөө", "en": "Kids Bedroom" },
+            { "mn": "Гэрийн угаалгын өрөө", "en": "Home Laundry" },
+            { "mn": "Ариун цэврийн өрөө", "en": "Bathroom" },
+            { "mn": "Хувцасны өрөө (Walk-in closet)", "en": "Walk-in Closet" }
+        ],
+        "Гал тогоо ба хооллох хэсэг": [
+            { "mn": "Гал тогоо", "en": "Kitchen" },
+            { "mn": "Хоолны өрөө", "en": "Dining Room" },
+            { "mn": "Гал тогоо-хоолны нэгдсэн хэсэг", "en": "Kitchen Dining" },
+            { "mn": "Баарны хэсэг / Кофе булан", "en": "Bar Area / Coffee Corner" }
+        ],
+        "Амралт ба зугаа цэнгэл": [
+            { "mn": "ТВ өрөө", "en": "TV Room" },
+            { "mn": "Кино театрын өрөө", "en": "Home Theater" },
+            { "mn": "Тоглоомын өрөө", "en": "Game Room" },
+            { "mn": "Хөгжмийн өрөө", "en": "Music Room" },
+            { "mn": "Фитнесс өрөө / Спорт орон зай", "en": "Fitness Room / Sports Space" },
+            { "mn": "Саун / Спа өрөө", "en": "Sauna / Spa Room" }
+        ],
+        "Ажлын орон зай": [
+            { "mn": "Ажлын өрөө / Оффис", "en": "Office" },
+            { "mn": "Гэрийн оффис", "en": "Home Office" },
+            { "mn": "Судалгааны өрөө / Номын сан", "en": "Study Room / Library" },
+            { "mn": "Уран бүтээлийн өрөө / Студи", "en": "Creative Room / Studio" }
+        ],
+        "Зочид буудал ба үйлчилгээний орон зай": [
+            { "mn": "Зочид буудлын өрөө", "en": "Hotel Room" },
+            { "mn": "Хүлээн авалтын хэсэг / Лобби", "en": "Reception / Lobby" },
+            { "mn": "Ресторан / Кофе шоп", "en": "Restaurant / Coffee Shop" },
+            { "mn": "Дэлгүүрийн орчин", "en": "Retail Space" },
+            { "mn": "Салон / Массаж өрөө", "en": "Salon / Massage Room" }
+        ],
+        "Гадна орон зай": [
+            { "mn": "Тагт", "en": "Balcony" },
+            { "mn": "Террас", "en": "Terrace" },
+            { "mn": "Хашааны талбай", "en": "Garden Area" },
+            { "mn": "Цэцэрлэг", "en": "Garden" },
+            { "mn": "Граж / Машины зогсоол", "en": "Garage / Parking" },
+            { "mn": "Сүүдрэвч / Gazebo", "en": "Pergola / Gazebo" }
+        ],
+        "Тусгай зориулалтын өрөө": [
+            { "mn": "Угаалгын өрөө (Laundry)", "en": "Laundry Room" },
+            { "mn": "Агуулах / Storage", "en": "Storage Room" },
+            { "mn": "Гутлын өрөө", "en": "Mudroom" },
+            { "mn": "Техникийн өрөө", "en": "Technical Room" },
+            { "mn": "Орц / Коридор", "en": "Entrance / Corridor" },
+            { "mn": "Лифтний хүлээлгийн хэсэг", "en": "Elevator Lobby" },
+            { "mn": "Төслийн өрөө / Workshop", "en": "Project Room / Workshop" }
+        ]
+    };
+
+    // Interior style data
+    const interiorStyles = [
+        { "en": "Minimalist Haven", "mn": "Минималист орчин" },
+        { "en": "Modern Fusion", "mn": "Орчин үеийн хослол" },
+        { "en": "Contemporary Elegance", "mn": "Орчин үеийн тансаг байдал" },
+        { "en": "Industrial Loft", "mn": "Аж үйлдвэрийн хэв маяг" },
+        { "en": "Bohemian Oasis", "mn": "Богемийн уур амьсгал" },
+        { "en": "Coastal Breeze", "mn": "Далайн эргийн сэрүүн уур амьсгал" },
+        { "en": "Desert Retreat", "mn": "Цөлийн амралтын хэв маяг" },
+        { "en": "Mountain Escape", "mn": "Уулын амралтын хэв маяг" },
+        { "en": "Victorian Elegance", "mn": "Викториан тансаг байдал" },
+        { "en": "Art Deco Glamour", "mn": "Арт Деко гоёл чимэглэл" },
+        { "en": "Mid-Century Modern", "mn": "20-р зууны дунд үеийн орчин үеийн хэв маяг" },
+        { "en": "French Country Charm", "mn": "Франц загварын хөдөөгийн хэв маяг" },
+        { "en": "Colonial Classic", "mn": "Колони хэв маягийн сонгодог орчин" },
+        { "en": "Scandinavian Sanctuary", "mn": "Скандинав минимал орчин" },
+        { "en": "Japanese Zen", "mn": "Япон Зэн хэв маяг" }
+    ];
+
+    // Selected values
+    let selectedRoomType = '';
+    let selectedInteriorStyle = '';
+
+    // Populate room types
+    function populateRoomTypes() {
+        const categoryColumn = document.getElementById('category-column');
+        const roomTypesColumn = document.getElementById('room-types-column');
+        const dropdown = document.getElementById('room-type-dropdown');
+        const menu = document.getElementById('room-type-menu');
+        const selectedRoomText = document.getElementById('selected-room-text');
+        
+        // Populate categories (left column)
+        let categoryHtml = '';
+        let firstCategory = true;
+        
+        for (const [category, rooms] of Object.entries(roomTypes)) {
+            categoryHtml += `<button class="category-btn w-full px-4 py-3 text-left flex justify-between items-center transition-colors ${firstCategory ? 'bg-orange-500 text-white' : 'text-gray-700 hover:bg-gray-100'}" data-category="${category}">
+                <span class="text-sm font-medium">${category}</span>
+                ${firstCategory ? 
+                    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>' :
+                    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>'
+                }
+            </button>`;
+            firstCategory = false;
+        }
+        
+        categoryColumn.innerHTML = categoryHtml;
+        
+        // Populate room types for first category
+        populateRoomTypesForCategory(Object.keys(roomTypes)[0]);
+        
+        // Category click handler
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.dataset.category;
+                
+                // Update active category styling
+                document.querySelectorAll('.category-btn').forEach(b => {
+                    b.classList.remove('bg-orange-500', 'text-white');
+                    b.classList.add('text-gray-700');
+                    const svg = b.querySelector('svg');
+                    if (svg) {
+                        svg.outerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>';
+                    }
+                });
+                this.classList.add('bg-orange-500', 'text-white');
+                this.classList.remove('text-gray-700');
+                const svg = this.querySelector('svg');
+                if (svg) {
+                    svg.outerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
+                }
+                
+                // Load room types for this category
+                populateRoomTypesForCategory(category);
+            });
+        });
+        
+        // Dropdown toggle
+        dropdown.addEventListener('click', function() {
+            menu.classList.toggle('hidden');
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    }
+    
+    function populateRoomTypesForCategory(category) {
+        const roomTypesColumn = document.getElementById('room-types-column');
+        const rooms = roomTypes[category];
+        
+        let roomHtml = '';
+        rooms.forEach(room => {
+            const isSelected = selectedRoomType === room.en;
+            roomHtml += `<button class="room-type-btn w-full px-4 py-3 text-left transition-colors ${isSelected ? 'bg-orange-50 text-orange-600' : 'hover:bg-orange-50 text-gray-700'}" data-room-mn="${room.mn}" data-room-en="${room.en}">
+                <span class="text-sm">${room.mn}</span>
+            </button>`;
+        });
+        
+        roomTypesColumn.innerHTML = roomHtml;
+        
+        // Room type click handler
+        document.querySelectorAll('.room-type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const roomMn = this.dataset.roomMn;
+                const roomEn = this.dataset.roomEn;
+                
+                // Update selected room (store English version)
+                selectedRoomType = roomEn;
+                document.getElementById('selected-room-text').textContent = roomMn;
+                
+                // Close menu
+                document.getElementById('room-type-menu').classList.add('hidden');
+                
+                // Update dropdown border color
+                document.getElementById('room-type-dropdown').classList.remove('border-orange-500');
+                document.getElementById('room-type-dropdown').classList.add('border-gray-900');
+            });
+        });
+    }
+
+    // Populate interior styles
+    function populateInteriorStyles() {
+        const container = document.getElementById('interior-style-container');
+        let html = '';
+        
+        interiorStyles.forEach(style => {
+            html += `<button class="interior-style-btn bg-gray-100 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-200 transition-colors" data-style="${style.en}">
+                <div class="w-full h-32 bg-gray-300 rounded mb-2"></div>
+                <p class="text-sm font-medium text-gray-900">${style.mn}</p>
+            </button>`;
+        });
+        
+        container.innerHTML = html;
+        
+        // Add click handlers
+        document.querySelectorAll('.interior-style-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.interior-style-btn').forEach(b => {
+                    b.classList.remove('bg-gray-900', 'ring-2', 'ring-gray-900');
+                    b.classList.add('bg-gray-100');
+                    const p = b.querySelector('p');
+                    if (p) {
+                        p.classList.remove('text-white');
+                        p.classList.add('text-gray-900');
+                    }
+                });
+                this.classList.add('bg-gray-900', 'ring-2', 'ring-gray-900');
+                this.classList.remove('bg-gray-100');
+                const p = this.querySelector('p');
+                if (p) {
+                    p.classList.add('text-white');
+                    p.classList.remove('text-gray-900');
+                }
+                selectedInteriorStyle = this.dataset.style;
+            });
+        });
+    }
+
+    // Initialize
+    populateRoomTypes();
+    populateInteriorStyles();
+
+    // Load credit balance
+    fetch('/api/dashboard/')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('credit-balance').textContent = data.credit_balance;
+        });
+
+    // Load recent images
+    function loadRecentImages() {
+        fetch('/api/recent-images/')
+            .then(response => response.json())
+            .then(data => {
+                const recentImagesContainer = document.getElementById('recent-images-container');
+                const recentImagesList = document.getElementById('recent-images-list');
+                
+                if (data.recent_images && data.recent_images.length > 0) {
+                    recentImagesList.innerHTML = '';
+                    
+                    data.recent_images.forEach(image => {
+                        const imgDiv = document.createElement('div');
+                        imgDiv.className = 'w-20 h-20 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity border-2 border-gray-200';
+                        imgDiv.innerHTML = `<img src="${image.original_image}" alt="Recent" class="w-full h-full object-cover">`;
+                        
+                        // Click to use this image
+                        imgDiv.addEventListener('click', function() {
+                            // We would need to convert the image URL to a File object
+                            // For now, just show the image in preview
+                            previewImg.src = image.original_image;
+                            imagePreview.classList.remove('hidden');
+                            uploadArea.classList.add('hidden');
+                            renderBtn.disabled = false;
+                        });
+                        
+                        recentImagesList.appendChild(imgDiv);
+                    });
+                    
+                    recentImagesContainer.classList.remove('hidden');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading recent images:', error);
+            });
+    }
+
+    // Load recent images on page load
+    loadRecentImages();
+
+    // Image preview
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                imagePreview.classList.remove('hidden');
+                uploadArea.classList.add('hidden');
+                renderBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Function to build prompt for Gemini Inpainting
+    function buildPrompt(roomType, style, description) {
+        const promptParts = [
+            `Using the provided image of a ${roomType || 'room'} interior,`,
+            `change the entire room design to ${style} style.`,
+            "Keep the exact room layout, floor plan, windows and doors positions unchanged.",
+            "Preserve the architectural elements, dimensions, and proportions.",
+            "Maintain realistic proportions, natural lighting, and professional interior design quality.",
+            "Only change the furniture, decor, colors, materials, and styling while keeping all structural elements identical."
+        ];
+        
+        if (description) {
+            promptParts.splice(-1, 0, `Following these specific requirements: ${description}`);
+        }
+        
+        return promptParts.join(' ');
+    }
+
+    // Render button click - show prompt preview
+    renderBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        if (!imageInput.files[0]) {
+            alert('Зураг байршуулна уу');
+            return;
+        }
+        
+        if (!selectedRoomType) {
+            alert('Өрөөний төрөл сонгоно уу');
+            return;
+        }
+        
+        if (!selectedInteriorStyle) {
+            alert('Интерьерийн хэв маяг сонгоно уу');
+            return;
+        }
+        
+        // Build and show prompt preview
+        const description = document.getElementById('description').value;
+        const prompt = buildPrompt(selectedRoomType, selectedInteriorStyle, description);
+        
+        document.getElementById('prompt-text').textContent = prompt;
+        document.getElementById('prompt-preview').classList.remove('hidden');
+        
+        // Scroll to prompt preview
+        document.getElementById('prompt-preview').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    // Confirm render button click - send to DALL-E
+    document.getElementById('confirm-render-btn').addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('image', imageInput.files[0]);
+        formData.append('room_type', selectedRoomType);
+        formData.append('style', selectedInteriorStyle);
+        formData.append('description', document.getElementById('description').value);
+        
+        // Hide prompt preview and show loading
+        document.getElementById('prompt-preview').classList.add('hidden');
+        submitText.classList.add('hidden');
+        loadingText.classList.remove('hidden');
+        renderBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/api/generate/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Show result
+                showComparison(data.generated_image);
+                result.classList.remove('hidden');
+                
+                // Update credit balance
+                fetch('/api/dashboard/')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('credit-balance').textContent = data.credit_balance;
+                    });
+                
+                // Reload recent images
+                loadRecentImages();
+            } else {
+                alert('Алдаа: ' + data.error);
+            }
+        } catch (error) {
+            alert('Алдаа: ' + error.message);
+        } finally {
+            // Reset form state
+            submitText.classList.remove('hidden');
+            loadingText.classList.add('hidden');
+            renderBtn.disabled = false;
+        }
+    });
+
+    function showComparison(generatedImage) {
+        const container = document.getElementById('comparison-container');
+        const originalSrc = imageInput.files[0] ? URL.createObjectURL(imageInput.files[0]) : '';
+        
+        container.innerHTML = `
+            <div class="relative w-full h-96">
+                <div class="absolute inset-0 overflow-hidden">
+                    <img src="${originalSrc}" alt="Анхны" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 overflow-hidden" style="clip-path: inset(0 50% 0 0);">
+                    <img src="${generatedImage.generated_image}" alt="Үүсгэсэн" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"></div>
+                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-full bg-white shadow-lg"></div>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-move">
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                    </svg>
+                </div>
+                <div class="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                    Анхны
+                </div>
+                <div class="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                    ${selectedInteriorStyle} Загвар
+                </div>
+            </div>
+        `;
+        
+        // Add slider functionality
+        addSliderFunctionality(container);
+    }
+
+    function addSliderFunctionality(container) {
+        const slider = container.querySelector('.absolute.top-1/2');
+        const afterImage = container.querySelector('div:nth-child(2)');
+        let isDragging = false;
+
+        slider.addEventListener('mousedown', () => isDragging = true);
+        document.addEventListener('mouseup', () => isDragging = false);
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percentage = (x / rect.width) * 100;
+            const clampedPercentage = Math.max(0, Math.min(100, percentage));
+            
+            afterImage.style.clipPath = `inset(0 ${100 - clampedPercentage}% 0 0)`;
+            slider.style.left = `${clampedPercentage}%`;
+        });
+    }
+
+    // Logout function
+    function logout() {
+        fetch('/api/logout/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '/';
+            }
+        });
+    }
+
+    // Get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+</body>
+</html>

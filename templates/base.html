@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ReHome - AI Interior Design{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">G</span>
+                        </div>
+                        <span class="text-xl font-bold text-gray-900">ReGer AI</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                        <span class="text-gray-700">Тавтай морил, {{ user.username }}!</span>
+                        <div class="flex items-center space-x-2 bg-primary-50 px-3 py-1 rounded-full">
+                            <span class="text-sm text-primary-700">Кредит:</span>
+                            <span class="text-sm font-semibold text-primary-900" id="credit-balance">Ачааллаж байна...</span>
+                        </div>
+                        <a href="/app/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Үүсгэх</a>
+                        <a href="/dashboard/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Хяналтын самбар</a>
+                        <button onclick="logout()" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Гарах</button>
+                    {% else %}
+                        <a href="/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Нүүр</a>
+                        <a href="/login/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Нэвтрэх</a>
+                        <a href="/signup/" class="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700">Бүртгүүлэх</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} bg-{% if message.tags == 'error' %}red-100 border-red-400 text-red-700{% else %}green-100 border-green-400 text-green-700{% endif %} px-4 py-3 rounded mb-2">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white border-t mt-12">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-gray-500 text-sm">
+                <p>&copy; 2024 ReGer AI. AI-аар гэрийн дизайныг ашиглан өөрийн орон зайг өөрчил.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Load credit balance on page load
+        {% if user.is_authenticated %}
+        fetch('/api/dashboard/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('credit-balance').textContent = data.credit_balance;
+            })
+            .catch(error => {
+                console.error('Error loading credit balance:', error);
+            });
+        {% endif %}
+
+        // Logout function
+        function logout() {
+            fetch('/api/logout/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            });
+        }
+
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

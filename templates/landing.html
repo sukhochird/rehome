@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+    <html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReGer AI - AI-аар өрөөгөө шинэчил</title>
+    <meta name="description" content="Өрөөний зургаа оруулаад AI-аар дизайныг хэрхэн харагдахыг шууд хар. 3 кредит үнэгүй туршиж үз.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans bg-white text-gray-900 antialiased">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/80 backdrop-blur-sm border-b border-gray-100 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">G</span>
+                    </div>
+                    <span class="text-xl font-bold text-gray-900">ReGer AI</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-gray-600 hover:text-gray-900 transition-colors">Онцлогууд</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-gray-900 transition-colors">Хэрхэн ажилладаг</a>
+                    <a href="#pricing" class="text-gray-600 hover:text-gray-900 transition-colors">Үнэ</a>
+                    {% if user.is_authenticated %}
+                        <a href="/app/" class="text-gray-600 hover:text-gray-900 transition-colors">Хяналтын самбар</a>
+                        <button onclick="logout()" class="text-gray-600 hover:text-gray-900 transition-colors">Гарах</button>
+                    {% else %}
+                        <button onclick="openLoginModal()" class="text-gray-600 hover:text-gray-900 transition-colors">Нэвтрэх</button>
+                        <button onclick="openSignupModal()" class="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors">Эхлэх</button>
+                    {% endif %}
+                </div>
+                <button class="md:hidden p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-16 lg:pt-32 lg:pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="text-center lg:text-left">
+                    <h1 class="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                        AI-аар өрөөгөө шинэчил
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
+                        Өрөөний зургаа оруулаад орчин үеийн, хялбар, эсвэл тансаг загварын дизайныг шууд хар.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        {% if user.is_authenticated %}
+                            <a href="/app/" class="bg-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 text-center">
+                                Хяналтын самбар руу орох
+                            </a>
+                            <a href="#how-it-works" class="border border-gray-300 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold hover:border-gray-400 transition-colors text-center">
+                                Хэрхэн ажилладагийг хар
+                            </a>
+                        {% else %}
+                            <button onclick="openSignupModal()" class="bg-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-800 transition-all duration-200 transform hover:scale-105">
+                                Үнэгүй туршиж үз (3 кредит)
+                            </button>
+                            <a href="#how-it-works" class="border border-gray-300 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold hover:border-gray-400 transition-colors">
+                                Хэрхэн ажилладагийг хар
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="mt-8 flex items-center justify-center lg:justify-start space-x-6 text-sm text-gray-500">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Карт шаардлагагүй
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Шууд үр дүн
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 shadow-2xl">
+                        <div class="relative bg-white rounded-xl overflow-hidden shadow-lg">
+                            <!-- Before/After Comparison with Real Images -->
+                            <div class="relative h-96 overflow-hidden rounded-xl">
+                                <!-- Before Image (left half) -->
+                                <div class="absolute inset-0 w-1/2">
+                                    <img src="https://i.ibb.co/jkJnMCg1/2931629c-e804-4aaf-9f3a-18942efff662.jpg" 
+                                         alt="Өмнө: Хуучин өрөө" 
+                                         class="w-full h-full object-cover">
+                                    <div class="absolute top-4 left-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                        Өмнө
+                                    </div>
+                                </div>
+                                <!-- After Image (right half) -->
+                                <div class="absolute right-0 inset-y-0 w-1/2">
+                                    <img src="https://i.ibb.co/wNn0YPgB/5811c220-d3c6-4ce8-a46d-56bf2d744cec.jpg" 
+                                         alt="Дараа: Шинэчилсэн өрөө" 
+                                         class="w-full h-full object-cover">
+                                    <div class="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                        Дараа
+                                    </div>
+                                </div>
+                                <!-- Slider line and handle -->
+                                <div class="absolute top-0 left-1/2 bottom-0 w-1 bg-white shadow-lg z-10"></div>
+                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-xl flex items-center justify-center z-20 cursor-pointer hover:scale-110 transition-transform">
+                                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Floating elements -->
+                    <div class="absolute -top-4 -right-4 w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center shadow-lg">
+                        <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Хүчирхэг AI технологи</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Хамгийн дэвшилтэт хиймэл оюун ухаан болон мэргэжлийн дизайны мэдлэгээр ямар ч өрөөг өөрчил.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">AI өрөөний дизайн</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Хамгийн дэвшилтэт AI зураглал үүсгэх загвар болох DALL·E 3-аар бодит өрөөний дизайн үүсгэ.
+                    </p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Загвараа сонго</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Орчин үеийн, Жапанди, Хялбар, эсвэл Тансаг. Таны хараа болон зан чанарад тохирох төгс загварыг сонго.
+                    </p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Шууд үр дүн</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Өрөөний зурагаа оруулаад секундын дотор өөрчлөлтийг хар. Хүлээх, төвөгтэй процесс алга.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Хэн ашиглаж болох</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Та гэрийн эзэн, дизайнер эсвэл үл хөдлөх хөрөнгийн мэргэжилтэн байсан ReGer AI танд зориулсан.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div class="text-center">
+                    <div class="w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl mx-auto mb-6 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Гэрийн эздүүд</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Өөрийн орон зайг итгэлтэйгээр сайжруул. Ямар ч өөрчлөлт хийхээсээ өмнө өрөө хэрхэн харагдахыг яг хар.
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="w-32 h-32 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl mx-auto mb-6 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Дизайнерүүд</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Үйлчлүүлэгчдэд зориулсан хурдан харааны урам зориг. Цаг биш минутаар олон дизайны сонголт танилцуул.
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="w-32 h-32 bg-gradient-to-br from-green-100 to-teal-100 rounded-2xl mx-auto mb-6 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Үл хөдлөх хөрөнгө</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Жагсаалтын виртуал тайз. Худалдаа авагчдад хоосон эсвэл хуучин орон зайн жинхэнэ боломжийг харуул.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Хэрхэн ажилладаг</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Гурван энгийн алхамаар өөрийн орон зайг өөрчил. Тийм энгийн.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="relative mb-8">
+                        <div class="w-24 h-24 bg-gray-900 text-white rounded-2xl mx-auto flex items-center justify-center text-3xl font-bold">
+                            1
+                        </div>
+                        <div class="w-32 h-32 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl mx-auto -mt-4 flex items-center justify-center shadow-lg">
+                            <svg class="w-16 h-16 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Өрөөний зурагаа оруул</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Өрөөний тод зураг аваад манай платформд оруул. Ямар ч өнцөг тохиромжтой.
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="relative mb-8">
+                        <div class="w-24 h-24 bg-gray-900 text-white rounded-2xl mx-auto flex items-center justify-center text-3xl font-bold">
+                            2
+                        </div>
+                        <div class="w-32 h-32 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl mx-auto -mt-4 flex items-center justify-center shadow-lg">
+                            <svg class="w-16 h-16 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Загвараа сонго</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Таны хараатай таарах өрөөний дизайны загварын манай сонгосон цуглуулгаас сонго.
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="relative mb-8">
+                        <div class="w-24 h-24 bg-gray-900 text-white rounded-2xl mx-auto flex items-center justify-center text-3xl font-bold">
+                            3
+                        </div>
+                        <div class="w-32 h-32 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl mx-auto -mt-4 flex items-center justify-center shadow-lg">
+                            <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Шинэчилсэн өрөөгөө ав</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Манай AI ид шидийн ажиллаж, секундын дотор өөрчлөгдсөн өрөөгөө хүргэж өгнө.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Энгийн үнэ</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Үнэгүй эхлээд, ашигласнаа л төл. Захиалга алга, нууц хураамж алга.
+                </p>
+            </div>
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                    <div class="text-center mb-8">
+                        <h3 class="text-3xl font-bold text-gray-900 mb-2">Кредит суурилсан үнэ</h3>
+                        <p class="text-gray-600">Зургийн үүсгэлт бүр 1 кредит</p>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Уужилгын бонус</h4>
+                                <p class="text-gray-600">Шинэ хэрэглэгчдэд зориулсан үнэгүй кредит</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-green-600">3 Кредит</div>
+                                <div class="text-sm text-gray-500">Үнэгүй</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Нэмэлт кредит</h4>
+                                <p class="text-gray-600">Хэрэгтэй үед нэмэлт худалдаж ав</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-gray-900">10 Кредит</div>
+                                <div class="text-sm text-gray-500">5,000 MNT</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center">
+                        {% if user.is_authenticated %}
+                            <a href="/app/" class="bg-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 inline-block">
+                                Хяналтын самбар руу орох
+                            </a>
+                        {% else %}
+                            <button onclick="openSignupModal()" class="bg-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 inline-block">
+                                Өнөөдөр үнэгүй эхлэх
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Хэрэглэгчдийн сэтгэгдэл</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    AI-аар өөрийн орон зайг өөрчилсөн мянга мянган сэтгэл хангалуун хэрэглэгчидтэй нэгдээрэй.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                            E
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-gray-900">Enkhee</h4>
+                            <p class="text-gray-600">Ulaanbaatar</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic">
+                        "ReGer AI миний байрыг бүрэн өөрчилсөн! Орчин үеийн тавилгатай гостин өрөө хэрхэн харагдахыг яг харж чадсан."
+                    </p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                            S
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-gray-900">Sarah</h4>
+                            <p class="text-gray-600">Interior Designer</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic">
+                        "Дизайнер болохын хувьд энэ хэрэгсэл надад цагийг хэмнэж өгдөг. Үйлчлүүлэгчдэд олон дизайны сонголтыг шууд харуулж, хэлэлцээрийг хурдан хааж чадна."
+                    </p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold">
+                            B
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-gray-900">Batbayar</h4>
+                            <p class="text-gray-600">Real Estate Agent</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic">
+                        "ReGer AI-тай виртуал тайз миний зарлалын үзэлтийг 40%-аар нэмэгдүүлсэн. Худалдаа авагчид хоосон орон зайн боломжийг төсөөлж чадна."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20">
+        <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-6">
+                Өөрийн орон зайг өөрчлөхөд бэлэн үү?
+            </h2>
+            <p class="text-xl text-gray-600 mb-8">
+                AI өрөөний дизайны хүчийг аль хэдийн олж мэдсэн мянга мянган хэрэглэгчидтэй нэгдээрэй.
+            </p>
+            {% if user.is_authenticated %}
+                <a href="/app/" class="bg-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 inline-block">
+                    Хяналтын самбар руу орох
+                </a>
+            {% else %}
+                <button onclick="openSignupModal()" class="bg-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 inline-block">
+                    Үнэгүй эхлэх
+                </button>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                            <span class="text-gray-900 font-bold text-sm">G</span>
+                        </div>
+                        <span class="text-xl font-bold">ReGer AI</span>
+                    </div>
+                    <p class="text-gray-400 mb-6 max-w-md">
+                        AI-аар гэрийн дизайныг ашиглан өөрийн орон зайг өөрчил. Зураг оруулаад ид шидийн үйлдлийг хар.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4">Бүтээгдэхүүн</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#features" class="text-gray-400 hover:text-white transition-colors">Онцлогууд</a></li>
+                        <li><a href="#pricing" class="text-gray-400 hover:text-white transition-colors">Үнэ</a></li>
+                        <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition-colors">Хэрхэн ажилладаг</a></li>
+                        <li><a href="/dashboard/" class="text-gray-400 hover:text-white transition-colors">Хяналтын самбар</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4">Компани</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Бидний тухай</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Холбоо барих</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Нууцлалын бодлого</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Үйлчилгээний нөхцөл</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center">
+                <p class="text-gray-400">
+                    © 2024 ReGer AI. Бүх эрх хуулиар хамгаалагдсан.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                    <span class="text-white font-bold text-2xl">G</span>
+                </div>
+                <h2 class="mt-4 text-3xl font-bold text-gray-900">Нэвтрэх</h2>
+                <p class="mt-2 text-gray-600">Тавтай морил</p>
+            </div>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label for="loginUsername" class="block text-sm font-semibold text-gray-900 mb-2">Хэрэглэгчийн нэр</label>
+                    <input id="loginUsername" type="text" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                           placeholder="Хэрэглэгчийн нэр">
+                </div>
+                <div>
+                    <label for="loginPassword" class="block text-sm font-semibold text-gray-900 mb-2">Нууц үг</label>
+                    <input id="loginPassword" type="password" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                           placeholder="Нууц үг">
+                </div>
+                <div id="loginError" class="hidden bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg text-sm"></div>
+                <button type="submit" class="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02]">
+                    Нэвтрэх
+                </button>
+            </form>
+            <div class="mt-4 text-center">
+                <p class="text-sm text-gray-600">
+                    Бүртгэл байхгүй? 
+                    <button onclick="closeLoginModal(); openSignupModal();" class="font-semibold text-gray-900 hover:text-gray-700">
+                        Бүртгүүлэх
+                    </button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeSignupModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                    <span class="text-white font-bold text-2xl">G</span>
+                </div>
+                <h2 class="mt-4 text-3xl font-bold text-gray-900">Бүртгүүлэх</h2>
+                <p class="mt-2 text-gray-600">3 кредит үнэгүй аваад эхлээрэй</p>
+            </div>
+            <form id="signupForm" class="space-y-4">
+                <div>
+                    <label for="signupUsername" class="block text-sm font-semibold text-gray-900 mb-2">Хэрэглэгчийн нэр</label>
+                    <input id="signupUsername" type="text" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                           placeholder="Хэрэглэгчийн нэр сонгоно уу">
+                </div>
+                <div>
+                    <label for="signupEmail" class="block text-sm font-semibold text-gray-900 mb-2">Имэйл</label>
+                    <input id="signupEmail" type="email" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                           placeholder="имэйл@example.com">
+                </div>
+                <div>
+                    <label for="signupPassword" class="block text-sm font-semibold text-gray-900 mb-2">Нууц үг</label>
+                    <input id="signupPassword" type="password" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                           placeholder="Нууц үг үүсгэнэ үү">
+                </div>
+                <div>
+                    <label for="signupConfirmPassword" class="block text-sm font-semibold text-gray-900 mb-2">Нууц үг баталгаажуулах</label>
+                    <input id="signupConfirmPassword" type="password" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                           placeholder="Нууц үгээ давтан оруулна уу">
+                </div>
+                <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+                    <div class="flex items-start">
+                        <svg class="h-5 w-5 text-green-600 mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <div>
+                            <h3 class="text-sm font-bold text-green-900">Уужилгын бонус!</h3>
+                            <p class="text-xs text-green-800 mt-1">3 кредит үнэгүй аваад AI өрөөний дизайныг туршаарай.</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="signupError" class="hidden bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg text-sm"></div>
+                <button type="submit" class="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02]">
+                    Бүртгүүлэх
+                </button>
+            </form>
+            <div class="mt-4 text-center">
+                <p class="text-sm text-gray-600">
+                    Бүртгэлтэй хэрэглэгч? 
+                    <button onclick="closeSignupModal(); openLoginModal();" class="font-semibold text-gray-900 hover:text-gray-700">
+                        Нэвтрэх
+                    </button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smooth scrolling script -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle (basic implementation)
+        const mobileMenuButton = document.querySelector('.md\\:hidden button');
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', function() {
+                // Add mobile menu functionality here if needed
+                console.log('Mobile menu clicked');
+            });
+        }
+
+        // Check URL and open appropriate modal (only if user is not authenticated)
+        {% if not user.is_authenticated %}
+        const urlParams = new URLSearchParams(window.location.search);
+        const hash = window.location.hash;
+        
+        if (urlParams.get('modal') === 'login' || hash === '#login') {
+            openLoginModal();
+        } else if (urlParams.get('modal') === 'signup' || hash === '#signup') {
+            openSignupModal();
+        }
+        {% endif %}
+
+        // Modal functions
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            // Clear hash from URL
+            if (window.location.hash === '#login') {
+                history.replaceState(null, null, ' ');
+            }
+        }
+
+        function openSignupModal() {
+            document.getElementById('signupModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSignupModal() {
+            document.getElementById('signupModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            // Clear hash from URL
+            if (window.location.hash === '#signup') {
+                history.replaceState(null, null, ' ');
+            }
+        }
+
+        // Close modal on background click
+        document.getElementById('loginModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLoginModal();
+            }
+        });
+
+        document.getElementById('signupModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSignupModal();
+            }
+        });
+
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            try {
+                const response = await fetch('/api/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    window.location.href = '/app/';
+                } else {
+                    errorDiv.textContent = data.error || 'Нэвтрэхэд алдаа гарлаа';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Сүлжээний алдаа. Дахин оролдоно уу.';
+                errorDiv.classList.remove('hidden');
+            }
+        });
+
+        // Signup form submission
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('signupUsername').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const errorDiv = document.getElementById('signupError');
+            
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Нууц үг тохирохгүй байна';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/signup/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Auto-login after successful signup
+                    const loginResponse = await fetch('/api/login/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken'),
+                        },
+                        body: JSON.stringify({
+                            username: username,
+                            password: password
+                        })
+                    });
+                    
+                    if (loginResponse.ok) {
+                        window.location.href = '/app/';
+                    } else {
+                        window.location.href = '/';
+                    }
+                } else {
+                    errorDiv.textContent = data.error || 'Бүртгүүлэхэд алдаа гарлаа';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Сүлжээний алдаа. Дахин оролдоно уу.';
+                errorDiv.classList.remove('hidden');
+            }
+        });
+
+        // Logout function
+        function logout() {
+            fetch('/api/logout/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            })
+            .catch(error => {
+                console.error('Logout error:', error);
+                window.location.href = '/';
+            });
+        }
+    </script>
+</body>
+</html>
