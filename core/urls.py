@@ -7,9 +7,9 @@ urlpatterns = [
     # Frontend pages
     path('', views_frontend.landing_view, name='landing'),
     path('app/', views_frontend.index_view, name='home'),
+    path('app/profile/', views_frontend.profile_view, name='profile_page'),
     path('login/', views_frontend.login_page, name='login_page'),  # Redirects to landing with modal
     path('signup/', views_frontend.signup_page, name='signup_page'),  # Redirects to landing with modal
-    path('dashboard/', views_frontend.dashboard_view, name='dashboard_page'),
     
     # API endpoints
     path('api/login/', views.login_view, name='login'),

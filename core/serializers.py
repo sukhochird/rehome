@@ -9,8 +9,8 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'credit_balance']
-        read_only_fields = ['id', 'credit_balance']
+        fields = ['id', 'username', 'email', 'credit_balance', 'date_joined']
+        read_only_fields = ['id', 'credit_balance', 'date_joined']
     
     def get_credit_balance(self, obj):
         """Calculate user's current credit balance"""

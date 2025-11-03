@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReGer AI - Өрөөний дизайн үүсгэх</title>
+    <title>AIinterior - Өрөөний дизайн үүсгэх</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -55,13 +55,25 @@
             <div class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
                 <span class="text-white font-bold text-sm">G</span>
             </div>
-            <span class="ml-2 text-xl font-bold text-gray-900">ReGer</span>
+            <span class="ml-2 text-xl font-bold text-gray-900">AIinterior</span>
         </a>
         <div class="flex items-center space-x-4">
             <div class="flex items-center bg-gray-100 px-4 py-2 rounded-lg">
                 <span class="text-sm text-gray-600 mr-2">Free plan</span>
                 <span class="text-sm font-semibold text-gray-900">Кредит: <span id="credit-balance">3</span></span>
             </div>
+            <a href="/app/profile/" class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                <div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
+                    <span class="text-white font-semibold text-sm" id="user-initial">U</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-gray-900" id="header-username">User</span>
+                    <span class="text-xs text-gray-500" id="header-email">email@example.com</span>
+                </div>
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </a>
             <button onclick="logout()" class="text-gray-600 hover:text-gray-900">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -137,17 +149,17 @@
                         </svg>
                         <span class="text-sm font-medium">Заавар</span>
                     </a>
-                    <a href="/dashboard/" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <a href="#" onclick="openAccountModal(); return false;" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <span class="text-sm font-medium">Түүх</span>
                     </a>
-                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <a href="/app/profile/" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
-                        <span class="text-sm font-medium">Аккаунт</span>
+                        <span class="text-sm font-medium">Profile</span>
                     </a>
                 </div>
             </aside>
@@ -264,15 +276,117 @@
                 <!-- Result Section -->
                 <div id="result" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hidden">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Таны үүсгэсэн дизайн</h3>
-                <div id="comparison-container" class="relative bg-gray-100 rounded-lg overflow-hidden">
+                <div id="comparison-container" class="p-4">
                     <!-- Before/After comparison will be inserted here -->
                 </div>
                 <div class="mt-4 flex justify-center">
-                        <a href="/dashboard/" class="text-gray-900 hover:text-gray-700 font-medium">Танхимд харах →</a>
+                        <a href="#" onclick="openAccountModal(); return false;" class="text-gray-900 hover:text-gray-700 font-medium">Аккаунт руу очих →</a>
                     </div>
                 </div>
                 </div>
             </main>
+        </div>
+    </div>
+</div>
+
+<!-- Account Modal -->
+<div id="account-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Аккаунт</h2>
+                    <button onclick="closeAccountModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- User Info Section -->
+                <div class="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg shadow-lg p-6 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-2" id="account-username">User</h3>
+                            <p class="text-primary-100" id="account-email">email@example.com</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-white mb-1" id="account-credit-balance">0</div>
+                            <p class="text-primary-100 text-sm">Кредит</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Credits Section -->
+                <div class="bg-white rounded-lg shadow-md mb-6">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">Credits</h3>
+                            <button onclick="purchaseCredits()" class="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors">
+                                Кредит худалдаж авах
+                            </button>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-gray-600">Одоогийн баланс:</span>
+                            <span class="text-2xl font-bold text-gray-900" id="modal-credit-balance">0</span>
+                        </div>
+                        <p class="text-sm text-gray-500">Зураг үүсгэх бүрт 1 кредит зарцуулна</p>
+                    </div>
+                </div>
+
+                <!-- Purchase Credits Modal -->
+                <div id="purchase-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-60">
+                    <div class="flex items-center justify-center min-h-screen p-4">
+                        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                            <div class="p-6">
+                                <h3 class="text-lg font-medium text-gray-900 mb-4">Кредит худалдаж авах</h3>
+                                <p class="text-gray-600 mb-4">
+                                    10 кредит 5,000 MNT-өөр худалдаж авах.
+                                </p>
+                                <div class="flex justify-end space-x-3">
+                                    <button onclick="closePurchaseModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                                        Цуцлах
+                                    </button>
+                                    <button onclick="confirmPurchase()" class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">
+                                        10 Кредит худалдаж авах
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="bg-white rounded-lg shadow-md mb-6">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">Сүүлийн гүйлгээ</h3>
+                    </div>
+                    <div class="divide-y divide-gray-200" id="modal-transactions-list">
+                        <div class="px-6 py-4 text-gray-500 text-center">Ачааллаж байна...</div>
+                    </div>
+                </div>
+
+                <!-- Generated Designs -->
+                <div class="bg-white rounded-lg shadow-md">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">Таны үүсгэсэн дизайнууд</h3>
+                    </div>
+                    <div class="p-6">
+                        <div id="modal-images-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="text-center py-12 text-gray-500">Ачааллаж байна...</div>
+                        </div>
+                        <div id="modal-no-images" class="text-center py-12 hidden">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">Одоогоор дизайн байхгүй</h3>
+                            <p class="mt-1 text-sm text-gray-500">Эхний дизайнаа үүсгээд эхэлнэ үү.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -518,11 +632,19 @@ document.addEventListener('DOMContentLoaded', function() {
     populateRoomTypes();
     populateInteriorStyles();
 
-    // Load credit balance
+    // Load credit balance and user info
     fetch('/api/dashboard/')
         .then(response => response.json())
         .then(data => {
             document.getElementById('credit-balance').textContent = data.credit_balance;
+            // Update user info in header
+            if (data.user) {
+                document.getElementById('header-username').textContent = data.user.username || 'User';
+                document.getElementById('header-email').textContent = data.user.email || 'email@example.com';
+                // Set user initial
+                const username = data.user.username || 'U';
+                document.getElementById('user-initial').textContent = username.charAt(0).toUpperCase();
+            }
         });
 
     // Load recent images
@@ -656,9 +778,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             if (response.ok) {
+                console.log('Render successful, data:', data);
+                console.log('Generated image data:', data.generated_image);
+                
                 // Show result
-                showComparison(data.generated_image);
-                result.classList.remove('hidden');
+                if (data.generated_image) {
+                    showComparison(data.generated_image);
+                    result.classList.remove('hidden');
+                    
+                    // Scroll to result section
+                    setTimeout(() => {
+                        result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                } else {
+                    console.error('Generated image data is missing');
+                    alert('Зураг үүсгэхэд алдаа гарлаа');
+                }
                 
                 // Update credit balance
                 fetch('/api/dashboard/')
@@ -683,55 +818,61 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function showComparison(generatedImage) {
+        console.log('showComparison called with:', generatedImage);
         const container = document.getElementById('comparison-container');
+        
+        if (!container) {
+            console.error('comparison-container not found');
+            return;
+        }
+        
         const originalSrc = imageInput.files[0] ? URL.createObjectURL(imageInput.files[0]) : '';
         
+        // Get style from generatedImage object or use selectedInteriorStyle
+        // generatedImage can be an object with style property or just the URL
+        let style = 'Загвар';
+        let generatedImageUrl = '';
+        
+        if (typeof generatedImage === 'object' && generatedImage !== null) {
+            style = generatedImage.style || selectedInteriorStyle || 'Загвар';
+            generatedImageUrl = generatedImage.generated_image || generatedImage.url || '';
+        } else if (typeof generatedImage === 'string') {
+            generatedImageUrl = generatedImage;
+            style = selectedInteriorStyle || 'Загвар';
+        }
+        
+        console.log('Style:', style, 'Generated URL:', generatedImageUrl);
+        
+        if (!generatedImageUrl) {
+            console.error('Generated image URL is missing');
+            container.innerHTML = '<p class="text-red-500">Зураг олдсонгүй</p>';
+            return;
+        }
+        
         container.innerHTML = `
-            <div class="relative w-full h-96">
-                <div class="absolute inset-0 overflow-hidden">
-                    <img src="${originalSrc}" alt="Анхны" class="w-full h-full object-cover">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Before Image (Left) -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900">Анхны</h4>
+                        <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Before</span>
+                    </div>
+                    <div class="bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-300 p-4">
+                        <img src="${originalSrc}" alt="Анхны зураг" class="w-full h-auto object-contain max-h-[600px] mx-auto">
+                    </div>
                 </div>
-                <div class="absolute inset-0 overflow-hidden" style="clip-path: inset(0 50% 0 0);">
-                    <img src="${generatedImage.generated_image}" alt="Үүсгэсэн" class="w-full h-full object-cover">
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"></div>
-                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-full bg-white shadow-lg"></div>
-                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-move">
-                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
-                    </svg>
-                </div>
-                <div class="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
-                    Анхны
-                </div>
-                <div class="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
-                    ${selectedInteriorStyle} Загвар
+                <!-- After Image (Right) -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900">${style}</h4>
+                        <span class="text-sm text-gray-500 bg-orange-100 px-3 py-1 rounded-full">After</span>
+                    </div>
+                    <div class="bg-gray-100 rounded-lg overflow-hidden border-2 border-orange-500 p-4">
+                        <img src="${generatedImageUrl}" alt="Үүсгэсэн зураг" class="w-full h-auto object-contain max-h-[600px] mx-auto">
+                    </div>
                 </div>
             </div>
         `;
-        
-        // Add slider functionality
-        addSliderFunctionality(container);
-    }
-
-    function addSliderFunctionality(container) {
-        const slider = container.querySelector('.cursor-move');
-        const afterImage = container.querySelector('div:nth-child(2)');
-        let isDragging = false;
-
-        slider.addEventListener('mousedown', () => isDragging = true);
-        document.addEventListener('mouseup', () => isDragging = false);
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            
-            const rect = container.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const percentage = (x / rect.width) * 100;
-            const clampedPercentage = Math.max(0, Math.min(100, percentage));
-            
-            afterImage.style.clipPath = `inset(0 ${100 - clampedPercentage}% 0 0)`;
-            slider.style.left = `${clampedPercentage}%`;
-        });
     }
 
     // Logout function
@@ -764,6 +905,216 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         return cookieValue;
+    }
+
+    // Account Modal Functions
+    function openAccountModal() {
+        const modal = document.getElementById('account-modal');
+        modal.classList.remove('hidden');
+        loadAccountData();
+    }
+
+    function closeAccountModal() {
+        const modal = document.getElementById('account-modal');
+        modal.classList.add('hidden');
+    }
+
+    async function loadAccountData() {
+        try {
+            const response = await fetch('/api/dashboard/');
+            const data = await response.json();
+            
+            // Update user info
+            document.getElementById('account-username').textContent = data.user.username;
+            document.getElementById('account-email').textContent = data.user.email || 'Email байхгүй';
+            
+            // Update credit balance
+            document.getElementById('account-credit-balance').textContent = data.credit_balance;
+            document.getElementById('modal-credit-balance').textContent = data.credit_balance;
+            
+            // Load transactions
+            loadModalTransactions(data.recent_transactions);
+            
+            // Load images
+            loadModalImages(data.generated_images);
+            
+        } catch (error) {
+            console.error('Error loading account data:', error);
+        }
+    }
+
+    function loadModalTransactions(transactions) {
+        const container = document.getElementById('modal-transactions-list');
+        
+        if (transactions.length === 0) {
+            container.innerHTML = '<div class="px-6 py-4 text-gray-500 text-center">Гүйлгээ байхгүй</div>';
+            return;
+        }
+        
+        container.innerHTML = transactions.map(transaction => {
+            const typeClass = transaction.transaction_type === 'add' ? 'text-green-600' : 'text-red-600';
+            const typeIcon = transaction.transaction_type === 'add' ? '+' : '-';
+            const date = new Date(transaction.created_at).toLocaleDateString('mn-MN');
+            
+            return `
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <span class="text-sm font-medium ${typeClass}">${typeIcon}</span>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-900">${transaction.description}</p>
+                            <p class="text-sm text-gray-500">${date}</p>
+                        </div>
+                    </div>
+                    <div class="text-sm ${typeClass} font-medium">
+                        ${typeIcon}${transaction.amount} кредит
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function loadModalImages(images) {
+        const container = document.getElementById('modal-images-grid');
+        const noImages = document.getElementById('modal-no-images');
+        
+        if (images.length === 0) {
+            container.classList.add('hidden');
+            noImages.classList.remove('hidden');
+            return;
+        }
+        
+        container.classList.remove('hidden');
+        noImages.classList.add('hidden');
+        
+        container.innerHTML = images.map(image => {
+            const date = new Date(image.created_at).toLocaleDateString('mn-MN');
+            
+            return `
+                <div class="bg-gray-50 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                    <div class="aspect-w-16 aspect-h-12 bg-gray-200">
+                        <img src="${image.generated_image}" alt="Generated design" class="w-full h-48 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h4 class="text-sm font-medium text-gray-900 capitalize">${image.style} Загвар</h4>
+                        <p class="text-sm text-gray-500 mt-1">${date}</p>
+                        <button onclick="showComparisonModal('${image.original_image}', '${image.generated_image}', '${image.style}')" 
+                                class="mt-2 text-primary-600 hover:text-primary-700 text-sm font-medium">
+                            Харьцуулах
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function purchaseCredits() {
+        document.getElementById('purchase-modal').classList.remove('hidden');
+    }
+
+    function closePurchaseModal() {
+        document.getElementById('purchase-modal').classList.add('hidden');
+    }
+
+    async function confirmPurchase() {
+        try {
+            const response = await fetch('/api/purchase-credits/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({
+                    amount: 10
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                closePurchaseModal();
+                loadAccountData(); // Reload data
+                // Also update header credit balance
+                fetch('/api/dashboard/')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('credit-balance').textContent = data.credit_balance;
+                    });
+                alert('10 кредит амжилттай худалдаж авлаа!');
+            } else {
+                alert('Алдаа: ' + data.error);
+            }
+        } catch (error) {
+            alert('Алдаа: ' + error.message);
+        }
+    }
+
+    // Comparison modal (from dashboard/account modal)
+    function showComparisonModal(originalImage, generatedImage, style) {
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center p-4';
+        modal.innerHTML = `
+            <div class="bg-white rounded-lg max-w-4xl w-full max-h-full overflow-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">${style} Загварын харьцуулалт</h3>
+                        <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="relative bg-gray-100 rounded-lg overflow-hidden">
+                        <div class="relative w-full h-96">
+                            <div class="absolute inset-0 overflow-hidden">
+                                <img src="${originalImage}" alt="Анхны" class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute inset-0 overflow-hidden" style="clip-path: inset(0 50% 0 0);">
+                                <img src="${generatedImage}" alt="Үүсгэсэн" class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"></div>
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-full bg-white shadow-lg"></div>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center cursor-move">
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                                </svg>
+                            </div>
+                            <div class="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                                Анхны
+                            </div>
+                            <div class="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                                ${style} Загвар
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Add slider functionality
+        const slider = modal.querySelector('.cursor-move');
+        const afterImage = modal.querySelector('div:nth-child(2)');
+        let isDragging = false;
+
+        slider.addEventListener('mousedown', () => isDragging = true);
+        document.addEventListener('mouseup', () => isDragging = false);
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const container = modal.querySelector('.relative.w-full');
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percentage = (x / rect.width) * 100;
+            const clampedPercentage = Math.max(0, Math.min(100, percentage));
+            
+            afterImage.style.clipPath = `inset(0 ${100 - clampedPercentage}% 0 0)`;
+            slider.style.left = `${clampedPercentage}%`;
+        });
     }
 });
 </script>

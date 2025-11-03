@@ -1,13 +1,13 @@
-# ReGer AI - AI Interior Design Generator
+# AIinterior - AI Interior Design Generator
 
-A web application where users can upload photos of their rooms and generate new interior design renders using AI (DALL·E 3). The system displays before-and-after comparison images side by side with an interactive slider.
+A web application where users can upload photos of their rooms and generate new interior design renders using AI (Google Gemini 2.5 Flash Image). The system displays before-and-after comparison images side by side with an interactive slider.
 
 ## 🚀 Features
 
 - **Landing Page**: Modern, conversion-focused marketing page with features and testimonials
 - **User Authentication**: Sign up, login, and user management
 - **Credit System**: Each user starts with 300 free credits, with option to purchase more
-- **AI Image Generation**: Upload room photos and generate new designs using DALL·E 3
+- **AI Image Generation**: Upload room photos and generate new designs using Google Gemini 2.5 Flash Image
 - **Style Selection**: Choose from 8 different interior design styles
 - **Before-After Comparison**: Interactive slider to compare original and generated images
 - **Dashboard**: View credit balance, transaction history, and generated designs
@@ -17,7 +17,7 @@ A web application where users can upload photos of their rooms and generate new 
 
 - **Backend**: Django 4.2.7 + Django REST Framework
 - **Frontend**: Tailwind CSS + HTML templates
-- **AI Integration**: OpenAI DALL·E 3 API
+- **AI Integration**: Google Gemini 2.5 Flash Image API
 - **Database**: SQLite (easily switchable to PostgreSQL)
 - **Authentication**: Django's built-in user system
 

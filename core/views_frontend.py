@@ -30,6 +30,8 @@ def signup_page(request):
 
 
 @login_required
-def dashboard_view(request):
-    """User dashboard"""
-    return render(request, 'dashboard.html')
+def profile_view(request):
+    """Profile page showing user information and credit history"""
+    return render(request, 'profile.html', {'user': request.user})
+
+

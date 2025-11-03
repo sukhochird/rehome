@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - AIinterior</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<script>
+    // Authentication check
+    fetch('/api/dashboard/')
+        .then(response => {
+            if (!response.ok) {
+                window.location.href = '/';
+            }
+        })
+        .catch(() => {
+            window.location.href = '/';
+        });
+</script>
+
+<!-- Site Header -->
+<header class="bg-white border-b border-gray-200 h-16 fixed top-0 left-0 right-0 z-10">
+    <div class="max-w-7xl mx-auto px-8 h-full flex justify-between items-center">
+        <a href="/app/" class="flex items-center hover:opacity-80 transition-opacity">
+            <div class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
+                <span class="text-white font-bold text-sm">G</span>
+            </div>
+            <span class="ml-2 text-xl font-bold text-gray-900">AIinterior</span>
+        </a>
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center bg-gray-100 px-4 py-2 rounded-lg">
+                <span class="text-sm text-gray-600 mr-2">Free plan</span>
+                <span class="text-sm font-semibold text-gray-900">Кредит: <span id="credit-balance">3</span></span>
+            </div>
+            <a href="/app/profile/" class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                <div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
+                    <span class="text-white font-semibold text-sm" id="user-initial">U</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-gray-900" id="header-username">User</span>
+                    <span class="text-xs text-gray-500" id="header-email">email@example.com</span>
+                </div>
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </a>
+            <button onclick="logout()" class="text-gray-600 hover:text-gray-900">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content Area -->
+<div class="min-h-screen bg-white pt-16">
+    <div class="max-w-7xl mx-auto px-8 py-8">
+        <div class="flex gap-8">
+            <!-- Side Menu -->
+            <aside class="w-64 bg-white flex-shrink-0 self-start sticky top-24">
+                <nav class="flex-1 p-4 space-y-1">
+                    <a href="/app/" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Нүүр</span>
+                    </a>
+                    <a href="/app/" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Render</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Сайжруулах</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Өнгөт болгох</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Байршуулах</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Засварлах</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Moodboard</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Видео</span>
+                    </a>
+                </nav>
+
+                <!-- Secondary Navigation -->
+                <div class="p-4 border-t border-gray-200 space-y-1">
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Заавар</span>
+                    </a>
+                    <a href="#" onclick="openAccountModal(); return false;" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Түүх</span>
+                    </a>
+                    <a href="/app/profile/" class="flex items-center px-4 py-2.5 bg-orange-50 text-orange-600 rounded-lg">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Profile</span>
+                    </a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1">
+                <div class="space-y-8">
+                    <!-- Page Title -->
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900">Profile</h1>
+                        <p class="text-gray-600 mt-2">Таны мэдээлэл болон үйл ажиллагаа</p>
+                    </div>
+
+                    <!-- User Info Section -->
+                    <div class="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                    <span class="text-white font-bold text-2xl" id="profile-user-initial">U</span>
+                                </div>
+                                <div>
+                                    <h2 class="text-2xl font-bold text-white mb-1" id="profile-username">User</h2>
+                                    <p class="text-primary-100" id="profile-email">email@example.com</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-4xl font-bold text-white mb-1" id="profile-credit-balance">0</div>
+                                <p class="text-primary-100 text-sm">Кредит</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Credits Section -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-lg font-semibold text-gray-900">Кредит</h3>
+                                <button onclick="purchaseCredits()" class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors">
+                                    Кредит худалдаж авах
+                                </button>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <span class="text-gray-700 font-medium">Одоогийн баланс:</span>
+                                    <span class="text-3xl font-bold text-gray-900" id="modal-credit-balance">0</span>
+                                </div>
+                                <p class="text-sm text-gray-500">Зураг үүсгэх бүрт 1 кредит зарцуулна</p>
+                            </div>
+                        </div>
+
+                        <!-- Account Info Section -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-6">Аккаунтын мэдээлэл</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Хэрэглэгчийн нэр</label>
+                                    <p class="text-gray-900 font-medium" id="account-username-display">-</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Имэйл</label>
+                                    <p class="text-gray-900 font-medium" id="account-email-display">-</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Бүртгүүлсэн огноо</label>
+                                    <p class="text-gray-500 text-sm" id="account-date-joined">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generated Designs -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">Таны үүсгэсэн дизайнууд</h3>
+                            <p class="text-sm text-gray-500 mt-1">Бүх үүсгэсэн дизайнууд</p>
+                        </div>
+                        <div class="p-6">
+                            <div id="images-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="text-center py-12 text-gray-500">Ачааллаж байна...</div>
+                            </div>
+                            <div id="no-images" class="text-center py-12 hidden">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">Одоогоор дизайн байхгүй</h3>
+                                <p class="mt-1 text-sm text-gray-500">Эхний дизайнаа үүсгээд эхэлнэ үү.</p>
+                                <a href="/app/" class="mt-4 inline-block bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors">
+                                    Дизайн үүсгэх
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Transactions -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900">Кредитын гүйлгээний түүх</h3>
+                            <p class="text-sm text-gray-500 mt-1">Бүх кредитын гүйлгээний мэдээлэл</p>
+                        </div>
+                        <div class="divide-y divide-gray-200" id="transactions-list">
+                            <div class="px-4 py-8 text-gray-500 text-center">Ачааллаж байна...</div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- Purchase Credits Modal -->
+<div id="purchase-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Кредит худалдаж авах</h3>
+                <p class="text-gray-600 mb-4">
+                    10 кредит 5,000 MNT-өөр худалдаж авах.
+                </p>
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closePurchaseModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        Цуцлах
+                    </button>
+                    <button onclick="confirmPurchase()" class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">
+                        10 Кредит худалдаж авах
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load account data
+    loadAccountData();
+
+    function loadAccountData() {
+        fetch('/api/dashboard/')
+            .then(response => response.json())
+            .then(data => {
+                // Update header
+                if (data.user) {
+                    document.getElementById('header-username').textContent = data.user.username || 'User';
+                    document.getElementById('header-email').textContent = data.user.email || 'email@example.com';
+                    const username = data.user.username || 'U';
+                    document.getElementById('user-initial').textContent = username.charAt(0).toUpperCase();
+                }
+                document.getElementById('credit-balance').textContent = data.credit_balance;
+
+                // Update profile section
+                if (data.user) {
+                    document.getElementById('profile-username').textContent = data.user.username || 'User';
+                    document.getElementById('profile-email').textContent = data.user.email || 'Email байхгүй';
+                    const username = data.user.username || 'U';
+                    document.getElementById('profile-user-initial').textContent = username.charAt(0).toUpperCase();
+                    
+                    document.getElementById('account-username-display').textContent = data.user.username || '-';
+                    document.getElementById('account-email-display').textContent = data.user.email || 'Email байхгүй';
+                    
+                    // Set date joined
+                    if (data.user.date_joined) {
+                        const dateJoined = new Date(data.user.date_joined);
+                        document.getElementById('account-date-joined').textContent = dateJoined.toLocaleDateString('mn-MN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                    }
+                }
+                
+                // Update credit balance
+                document.getElementById('profile-credit-balance').textContent = data.credit_balance;
+                document.getElementById('modal-credit-balance').textContent = data.credit_balance;
+                
+                // Load transactions
+                loadTransactions(data.recent_transactions || []);
+                
+                // Load images
+                loadImages(data.generated_images || []);
+            })
+            .catch(error => {
+                console.error('Error loading account data:', error);
+            });
+    }
+
+    function loadTransactions(transactions) {
+        const container = document.getElementById('transactions-list');
+        
+        if (transactions.length === 0) {
+            container.innerHTML = '<div class="px-4 py-8 text-gray-500 text-center">Гүйлгээ байхгүй</div>';
+            return;
+        }
+        
+        container.innerHTML = transactions.map(transaction => {
+            const typeClass = transaction.transaction_type === 'add' ? 'text-green-600' : 'text-red-600';
+            const typeIcon = transaction.transaction_type === 'add' ? '+' : '-';
+            const date = new Date(transaction.created_at).toLocaleDateString('mn-MN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            return `
+                <div class="px-4 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 ${transaction.transaction_type === 'add' ? 'bg-green-100' : 'bg-red-100'} rounded-full flex items-center justify-center">
+                                <span class="text-lg font-medium ${typeClass}">${typeIcon}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">${transaction.description || 'Гүйлгээ'}</p>
+                            <p class="text-sm text-gray-500">${date}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-lg font-semibold ${typeClass}">
+                            ${typeIcon}${transaction.amount} кредит
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function loadImages(images) {
+        const container = document.getElementById('images-grid');
+        const noImages = document.getElementById('no-images');
+        
+        if (images.length === 0) {
+            container.classList.add('hidden');
+            noImages.classList.remove('hidden');
+            return;
+        }
+        
+        container.classList.remove('hidden');
+        noImages.classList.add('hidden');
+        
+        container.innerHTML = images.map((image, index) => {
+            const date = new Date(image.created_at).toLocaleDateString('mn-MN');
+            const imageId = `image-${index}`;
+            
+            return `
+                <div class="bg-gray-50 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer image-card" 
+                     data-original="${image.original_image}" 
+                     data-generated="${image.generated_image}" 
+                     data-style="${image.style}">
+                    <div class="aspect-w-16 aspect-h-12 bg-gray-200">
+                        <img src="${image.generated_image}" alt="Generated design" class="w-full h-48 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h4 class="text-sm font-medium text-gray-900 capitalize">${image.style} Загвар</h4>
+                        ${image.room_type ? `<p class="text-xs text-gray-500 mt-1">${image.room_type}</p>` : ''}
+                        <p class="text-sm text-gray-500 mt-1">${date}</p>
+                        <button class="compare-btn mt-2 text-primary-600 hover:text-primary-700 text-sm font-medium" 
+                                data-original="${image.original_image}" 
+                                data-generated="${image.generated_image}" 
+                                data-style="${image.style}">
+                            Харьцуулах
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        // Add event listeners to image cards
+        container.querySelectorAll('.image-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('compare-btn') && !e.target.closest('.compare-btn')) {
+                    const original = this.dataset.original;
+                    const generated = this.dataset.generated;
+                    const style = this.dataset.style;
+                    if (original && generated && style) {
+                        console.log('Opening comparison modal:', { original, generated, style });
+                        window.showComparison(original, generated, style);
+                    } else {
+                        console.error('Missing image data:', { original, generated, style });
+                    }
+                }
+            });
+        });
+        
+        // Add event listeners to compare buttons
+        container.querySelectorAll('.compare-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                const original = this.dataset.original;
+                const generated = this.dataset.generated;
+                const style = this.dataset.style;
+                if (original && generated && style) {
+                    console.log('Opening comparison modal from button:', { original, generated, style });
+                    window.showComparison(original, generated, style);
+                } else {
+                    console.error('Missing image data:', { original, generated, style });
+                }
+            });
+        });
+    }
+
+    function purchaseCredits() {
+        document.getElementById('purchase-modal').classList.remove('hidden');
+    }
+
+    function closePurchaseModal() {
+        document.getElementById('purchase-modal').classList.add('hidden');
+    }
+
+    async function confirmPurchase() {
+        try {
+            const response = await fetch('/api/purchase-credits/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({
+                    amount: 10
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                closePurchaseModal();
+                loadAccountData(); // Reload data
+                alert('10 кредит амжилттай худалдаж авлаа!');
+            } else {
+                alert('Алдаа: ' + (data.error || 'Алдаа гарлаа'));
+            }
+        } catch (error) {
+            alert('Алдаа: ' + error.message);
+        }
+    }
+
+    // Comparison modal function (make it accessible globally)
+    window.showComparison = function(originalImage, generatedImage, style) {
+        console.log('showComparison called with:', { originalImage, generatedImage, style });
+        
+        if (!originalImage || !generatedImage) {
+            console.error('Missing image URLs');
+            alert('Зураг олдсонгүй');
+            return;
+        }
+        
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center p-4';
+        modal.innerHTML = `
+            <div class="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold text-gray-900">${style} Загварын харьцуулалт</h3>
+                        <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Before Image (Left) -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-lg font-medium text-gray-900">Анхны</h4>
+                                <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Before</span>
+                            </div>
+                            <div class="bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-300">
+                                <img src="${originalImage}" alt="Анхны зураг" class="w-full h-auto object-contain max-h-[600px]">
+                            </div>
+                        </div>
+                        <!-- After Image (Right) -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-lg font-medium text-gray-900">${style} Загвар</h4>
+                                <span class="text-sm text-gray-500 bg-primary-100 px-3 py-1 rounded-full">After</span>
+                            </div>
+                            <div class="bg-gray-100 rounded-lg overflow-hidden border-2 border-primary-500">
+                                <img src="${generatedImage}" alt="Үүсгэсэн зураг" class="w-full h-auto object-contain max-h-[600px]">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-center">
+                        <button onclick="this.closest('.fixed').remove()" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium">
+                            Хаах
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+        
+        // Close modal on Escape key
+        const escapeHandler = function(e) {
+            if (e.key === 'Escape') {
+                modal.remove();
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        };
+        document.addEventListener('keydown', escapeHandler);
+    };
+
+    // Logout function
+    function logout() {
+        fetch('/api/logout/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '/';
+            }
+        });
+    }
+
+    // Get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Function to open account modal (for history link)
+    function openAccountModal() {
+        // For now, just redirect to profile page
+        window.location.href = '/app/profile/';
+    }
+});
+</script>
+</body>
+</html>
