@@ -13,6 +13,9 @@ import io
 from PIL import Image
 import os
 import uuid
+from google import genai
+from io import BytesIO
+import base64
 
 from .models import CreditTransaction, GeneratedImage
 from .serializers import (
@@ -133,7 +136,20 @@ class GenerateImageView(APIView):
         description = serializer.validated_data.get('description', '')
         
         try:
-            # Open the uploaded image
+            # Save original image first
+            original_image_file = None
+            if image:
+                # Reset file pointer to beginning
+                image.seek(0)
+                
+                # Generate unique filename for original image
+                original_image_name = f"original_{uuid.uuid4().hex}_{image.name}"
+                
+                # Read the file content and save it
+                original_image_file = ContentFile(image.read(), name=original_image_name)
+            
+            # Open the uploaded image for processing
+            image.seek(0)  # Reset file pointer
             uploaded_image = Image.open(image)
             
             # Convert to RGB if necessary (remove alpha channel for compatibility)
@@ -147,49 +163,100 @@ class GenerateImageView(APIView):
             uploaded_image.save(image_bytes, format='PNG')
             image_bytes.seek(0)
             
-            # Create detailed prompt for DALL·E 3
-            prompt = f"A professional interior design rendering of this {room_type if room_type else 'room'} redesigned in {style} style"
+            # Convert image for Gemini
+            image_bytes.seek(0)
+            pil_image = Image.open(image_bytes)
+            
+            # Create comprehensive prompt for Gemini 2.5 Flash Image
+            text_input = f"""Using the provided image of a {room_type if room_type else 'room'} interior, change the entire room design to {style} style. Keep the exact room layout, floor plan, windows and doors positions unchanged. Preserve the architectural elements, dimensions, and proportions. Maintain realistic proportions, natural lighting, and professional interior design quality. Only change the furniture, decor, colors, materials, and styling while keeping all structural elements identical."""
             
             if description:
-                prompt += f". {description}"
+                text_input += f" Additional requirements: {description}"
             
-            prompt += ". High quality, realistic interior design with professional lighting and attention to detail."
+            # Use Gemini 2.5 Flash Image API with the correct client format
+            generated_image_file = None
             
-            # Initialize OpenAI client
-            client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
+            try:
+                # Initialize Gemini client
+                client = genai.Client(api_key=settings.GEMINI_API_KEY)
+                
+                # Generate image using the client
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash-image",
+                    contents=[text_input, pil_image],
+                )
+                
+                # Extract image from response
+                image_parts = [
+                    part.inline_data.data
+                    for part in response.candidates[0].content.parts
+                    if part.inline_data
+                ]
+                
+                if image_parts:
+                    # Convert to PIL Image and then to ContentFile
+                    image = Image.open(BytesIO(image_parts[0]))
+                    
+                    # Save to BytesIO buffer
+                    output_buffer = BytesIO()
+                    image.save(output_buffer, format='PNG')
+                    output_buffer.seek(0)
+                    
+                    # Create ContentFile
+                    generated_image_file = ContentFile(
+                        output_buffer.read(),
+                        name=f"generated_{uuid.uuid4().hex}.png"
+                    )
+                else:
+                    raise Exception("No image data found in API response")
+                        
+            except Exception as e:
+                # If generation fails, raise the exception with details
+                raise Exception(f"Failed to generate image with Gemini: {str(e)}")
             
-            # Generate image using DALL·E 3
-            response = client.images.generate(
-                model="dall-e-3",
-                prompt=prompt,
-                size="1024x1024",
-                quality="standard",
-                n=1,
-            )
+            if not generated_image_file:
+                raise Exception("No image was generated. Please check your API key and model availability.")
             
-            # Download the generated image
-            image_url = response.data[0].url
-            generated_image_response = requests.get(image_url)
+            # Verify generated image file has content
+            generated_image_file.seek(0, 2)  # Seek to end
+            file_size = generated_image_file.tell()
+            generated_image_file.seek(0)  # Reset to beginning
             
-            if generated_image_response.status_code != 200:
-                raise Exception("Failed to download generated image from OpenAI")
+            if file_size == 0:
+                raise Exception("Generated image file is empty. Please check the API response.")
             
-            # Save the generated image
-            generated_image_name = f"generated_{uuid.uuid4().hex}.png"
-            generated_image_file = ContentFile(
-                generated_image_response.content,
-                name=generated_image_name
-            )
+            # Ensure we have original image file
+            if not original_image_file:
+                # Fallback: create from processed image
+                image_bytes.seek(0)
+                original_image_name = f"original_{uuid.uuid4().hex}.png"
+                original_image_file = ContentFile(image_bytes.read(), name=original_image_name)
             
-            # Create GeneratedImage instance
-            generated_image = GeneratedImage.objects.create(
-                user=request.user,
-                original_image=image,
-                generated_image=generated_image_file,
-                style=style,
-                room_type=room_type,
-                description=description
-            )
+            # Reset file pointers before saving
+            generated_image_file.seek(0)
+            if hasattr(original_image_file, 'seek'):
+                original_image_file.seek(0)
+            
+            # Create GeneratedImage instance and save both images
+            try:
+                generated_image = GeneratedImage.objects.create(
+                    user=request.user,
+                    original_image=original_image_file,
+                    generated_image=generated_image_file,
+                    style=style,
+                    room_type=room_type,
+                    description=description
+                )
+                
+                # Ensure the instance is saved properly and files are written
+                generated_image.save()
+                
+                # Verify the saved file
+                if hasattr(generated_image.generated_image, 'size') and generated_image.generated_image.size == 0:
+                    raise Exception("Saved generated image file is empty after save operation.")
+                
+            except Exception as save_error:
+                raise Exception(f"Failed to save generated image: {str(save_error)}")
             
             # Deduct credit
             CreditTransaction.objects.create(
@@ -269,7 +336,7 @@ def signup_view(request):
         password=password
     )
     
-    # The post_save signal will automatically create 3 free credits
+    # The post_save signal will automatically create 300 free credits
     
     return Response({
         'message': 'User created successfully',

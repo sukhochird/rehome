@@ -52,11 +52,11 @@ class GeneratedImage(models.Model):
 
 @receiver(post_save, sender=User)
 def create_user_credits(sender, instance, created, **kwargs):
-    """Automatically give new users 3 free credits"""
+    """Automatically give new users 300 free credits"""
     if created:
         CreditTransaction.objects.create(
             user=instance,
-            amount=3,
+            amount=300,
             transaction_type='add',
-            description='Welcome bonus - 3 free credits'
+            description='Welcome bonus - 300 free credits'
         )

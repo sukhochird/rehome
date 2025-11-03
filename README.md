@@ -6,7 +6,7 @@ A web application where users can upload photos of their rooms and generate new 
 
 - **Landing Page**: Modern, conversion-focused marketing page with features and testimonials
 - **User Authentication**: Sign up, login, and user management
-- **Credit System**: Each user starts with 3 free credits, with option to purchase more
+- **Credit System**: Each user starts with 300 free credits, with option to purchase more
 - **AI Image Generation**: Upload room photos and generate new designs using DALL·E 3
 - **Style Selection**: Choose from 8 different interior design styles
 - **Before-After Comparison**: Interactive slider to compare original and generated images
@@ -75,7 +75,7 @@ A web application where users can upload photos of their rooms and generate new 
 
 ### Getting Started
 
-1. **Sign Up**: Create a new account to get 3 free credits
+1. **Sign Up**: Create a new account to get 300 free credits
 2. **Upload**: Upload a photo of your room
 3. **Choose Style**: Select from 8 different design styles:
    - Modern
@@ -91,7 +91,7 @@ A web application where users can upload photos of their rooms and generate new 
 
 ### Credit System
 
-- **Free Credits**: New users receive 3 free credits upon signup
+- **Free Credits**: New users receive 300 free credits upon signup
 - **Credit Usage**: Each image generation costs 1 credit
 - **Purchase Credits**: Buy 10 credits for 5,000 MNT (simulated payment)
 - **Dashboard**: Monitor your credit balance and usage history
