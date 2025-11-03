@@ -150,8 +150,5 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-# OpenAI API Key
-OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
-
 # Google Gemini API Key
 GEMINI_API_KEY = config('GEMINI_API_KEY', default='')

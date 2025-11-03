@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.conf import settings
 from django.core.files.base import ContentFile
-import openai
 import requests
 import io
 from PIL import Image
