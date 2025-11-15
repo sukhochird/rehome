@@ -38,7 +38,7 @@
                         <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
                             <span class="text-white font-bold text-lg">G</span>
                         </div>
-                        <span class="text-xl font-bold text-gray-900">AIinterior</span>
+                        <span class="text-xl font-bold text-gray-900">Rehome Today</span>
                     </a>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -50,7 +50,7 @@
                         </div>
                         <a href="/app/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Үүсгэх</a>
                         <a href="/app/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Аккаунт</a>
-                        <button onclick="logout()" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Гарах</button>
+                        <a href="/logout/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Гарах</a>
                     {% else %}
                         <a href="/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Нүүр</a>
                         <a href="/login/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Нэвтрэх</a>
@@ -78,7 +78,7 @@
     <footer class="bg-white border-t mt-12">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="text-center text-gray-500 text-sm">
-                <p>&copy; 2024 AIinterior. AI-аар гэрийн дизайныг ашиглан өөрийн орон зайг өөрчил.</p>
+                <p>&copy; 2024 Rehome Today. AI-аар гэрийн дизайныг ашиглан өөрийн орон зайг өөрчил.</p>
             </div>
         </div>
     </footer>
@@ -98,18 +98,7 @@
 
         // Logout function
         function logout() {
-            fetch('/api/logout/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = '/';
-                }
-            });
+            window.location.href = '/logout/';
         }
 
         // Get CSRF token

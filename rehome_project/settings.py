@@ -152,3 +152,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Google Gemini API Key
 GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
+
+# QPay Settings
+QPAY_USERNAME = config('QPAY_USERNAME', default='LIFE_MART')
+QPAY_PASSWORD = config('QPAY_PASSWORD', default='VajrMvGY')
+QPAY_INVOICE_CODE = config('QPAY_INVOICE_CODE', default='LIFE_MART_INVOICE')
+QPAY_CALLBACK_BASE_URL = config('QPAY_CALLBACK_BASE_URL', default='http://localhost:8000')

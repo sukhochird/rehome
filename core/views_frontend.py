@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.http import JsonResponse
@@ -33,5 +34,11 @@ def signup_page(request):
 def profile_view(request):
     """Profile page showing user information and credit history"""
     return render(request, 'profile.html', {'user': request.user})
+
+
+def logout_view(request):
+    """Logout view - logs out user and redirects to home page"""
+    logout(request)
+    return redirect('/')
 
 

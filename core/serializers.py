@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.db.models import Sum
-from .models import CreditTransaction, GeneratedImage
+from .models import CreditTransaction, GeneratedImage, Package, Order
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -48,3 +48,21 @@ class ImageGenerationSerializer(serializers.Serializer):
 
 class PurchaseCreditsSerializer(serializers.Serializer):
     amount = serializers.IntegerField(default=10)
+
+
+class PackageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package
+        fields = ['id', 'name', 'credits', 'price', 'is_active', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    package = PackageSerializer(read_only=True)
+    package_id = serializers.IntegerField(write_only=True, required=False)
+    
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'package', 'package_id', 'amount', 'status', 
+                  'qpay_invoice_id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'user', 'status', 'qpay_invoice_id', 'created_at', 'updated_at']

@@ -5,3 +5,6 @@ DS_Store
 .idea/
 *__pycache__/*
 env/
+ # Python bytecode files
+*.pyc
+ __pycache__/

@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.utils import timezone
+from datetime import timedelta
 import requests
 import io
 from PIL import Image
@@ -15,12 +17,15 @@ import uuid
 from google import genai
 from io import BytesIO
 import base64
+import random
+import re
+import json
 
-from .models import CreditTransaction, GeneratedImage
+from .models import CreditTransaction, GeneratedImage, OTPCode, Package, Order
 from .serializers import (
     UserSerializer, CreditTransactionSerializer, 
     GeneratedImageSerializer, ImageGenerationSerializer,
-    PurchaseCreditsSerializer
+    PurchaseCreditsSerializer, PackageSerializer, OrderSerializer
 )
 
 
@@ -67,28 +72,125 @@ class UserDashboardView(APIView):
         })
 
 
+# QPay Integration Functions
+def get_qpay_access_token():
+    """Get QPay access token"""
+    url = "https://merchant.qpay.mn/v2/auth/token"
+    response = requests.post(
+        url, 
+        auth=(settings.QPAY_USERNAME, settings.QPAY_PASSWORD)
+    )
+    if response.status_code == 200:
+        return json.loads(response.text)['access_token']
+    else:
+        raise Exception(f"Failed to get QPay access token: {response.text}")
+
+
+def create_qpay_invoice(order):
+    """Create QPay invoice for an order"""
+    try:
+        access_token = get_qpay_access_token()
+        bearer_token = f"Bearer {access_token}"
+        url = "https://merchant.qpay.mn/v2/invoice"
+        
+        # Get the base URL from request (we'll pass it from view)
+        # For now, use a placeholder that will be replaced
+        callback_url = f"{settings.QPAY_CALLBACK_BASE_URL}/api/qpay-webhook/?invoiceid={order.id}"
+        
+        request_body = {
+            "invoice_code": settings.QPAY_INVOICE_CODE,
+            "sender_invoice_no": str(order.id),
+            "invoice_receiver_code": "terminal",
+            "invoice_description": f"ReHome - {order.package.name} багц ({order.package.credits} кредит)",
+            "sender_branch_code": "Credits",
+            "amount": str(int(order.amount)),
+            "callback_url": callback_url
+        }
+        
+        request_headers = {
+            'Content-Type': 'application/json',
+            'Authorization': bearer_token,
+        }
+        
+        response = requests.post(
+            url, 
+            headers=request_headers, 
+            data=json.dumps(request_body)
+        )
+        
+        if response.status_code == 200:
+            response_json = json.loads(response.text)
+            return response_json
+        else:
+            raise Exception(f"Failed to create QPay invoice: {response.text}")
+    except Exception as e:
+        raise Exception(f"QPay invoice creation error: {str(e)}")
+
+
+class PackageListView(APIView):
+    """List all active credit packages"""
+    permission_classes = [permissions.AllowAny]
+    
+    def get(self, request):
+        packages = Package.objects.filter(is_active=True)
+        return Response({
+            'packages': PackageSerializer(packages, many=True).data
+        })
+
+
 class PurchaseCreditsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def post(self, request):
-        serializer = PurchaseCreditsSerializer(data=request.data)
-        if serializer.is_valid():
-            amount = serializer.validated_data['amount']
+        package_id = request.data.get('package_id')
+        
+        if not package_id:
+            return Response({
+                'error': 'package_id шаардлагатай'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            package = Package.objects.get(id=package_id, is_active=True)
+        except Package.DoesNotExist:
+            return Response({
+                'error': 'Багц олдсонгүй'
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+        # Create order
+        order = Order.objects.create(
+            user=request.user,
+            package=package,
+            amount=package.price,
+            status='pending'
+        )
+        
+        try:
+            # Create QPay invoice
+            qpay_response = create_qpay_invoice(order)
             
-            # Create credit transaction
-            CreditTransaction.objects.create(
-                user=request.user,
-                amount=amount,
-                transaction_type='add',
-                description=f'Purchased {amount} credits for 5,000 MNT'
-            )
+            # Update order with QPay invoice info
+            order.qpay_invoice_id = qpay_response.get('invoice_id')
+            order.qpay_invoice_code = qpay_response.get('invoice_id')  # Using invoice_id as code
+            order.save()
             
             return Response({
-                'message': f'Successfully purchased {amount} credits!',
-                'credits_added': amount
+                'message': 'QPay invoice амжилттай үүслээ',
+                'order': OrderSerializer(order).data,
+                'qpay_invoice': {
+                    'invoice_id': qpay_response.get('invoice_id'),
+                    'qr_text': qpay_response.get('qr_text'),
+                    'qr_image': qpay_response.get('qr_image'),
+                    'qPay_shortUrl': qpay_response.get('qPay_shortUrl'),
+                    'urls': qpay_response.get('urls', [])
+                }
             }, status=status.HTTP_201_CREATED)
         
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            order.status = 'failed'
+            order.save()
+            return Response({
+                'error': f'QPay invoice үүсгэхэд алдаа гарлаа: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class RecentImagesView(APIView):
@@ -278,26 +380,155 @@ class GenerateImageView(APIView):
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
-def login_view(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
+def send_otp_view(request):
+    """Send OTP code to phone or email"""
+    phone_or_email = request.data.get('phone_or_email', '').strip()
     
-    if username and password:
-        user = authenticate(request, username=username, password=password)
+    if not phone_or_email:
+        return Response({
+            'error': 'Утасны дугаар эсвэл имэйл оруулна уу'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Validate phone number format (for signup, only phone is allowed)
+    # For login, we allow both phone and email
+    is_email = '@' in phone_or_email
+    if not is_email:
+        # Validate phone number (only digits, 8-10 digits)
+        phone_regex = re.compile(r'^[0-9]{8,10}$')
+        if not phone_regex.match(phone_or_email):
+            return Response({
+                'error': 'Утасны дугаар зөв биш байна. Зөвхөн тоо оруулна уу (8-10 орон)'
+            }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Generate OTP code (for testing, always use 123456)
+    otp_code = '123456'
+    
+    # In production, you would generate a random code:
+    # otp_code = str(random.randint(100000, 999999))
+    
+    # Set expiration time (5 minutes)
+    expires_at = timezone.now() + timedelta(minutes=5)
+    
+    # Mark old OTP codes as used
+    OTPCode.objects.filter(
+        phone_or_email=phone_or_email,
+        is_used=False
+    ).update(is_used=True)
+    
+    # Create new OTP code
+    otp = OTPCode.objects.create(
+        phone_or_email=phone_or_email,
+        otp_code=otp_code,
+        expires_at=expires_at
+    )
+    
+    # Fake SMS API - just log it (in production, send real SMS)
+    print(f"[FAKE SMS] Sending OTP {otp_code} to {phone_or_email}")
+    
+    return Response({
+        'message': 'OTP код илгээгдлээ',
+        'otp_code': otp_code  # Only for testing, remove in production
+    })
+
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def verify_otp_view(request):
+    """Verify OTP code and login/signup user"""
+    phone_or_email = request.data.get('phone_or_email', '').strip()
+    otp_code = request.data.get('otp_code', '').strip()
+    username = request.data.get('username', '').strip()
+    
+    if not phone_or_email or not otp_code:
+        return Response({
+            'error': 'Утасны дугаар/имэйл болон OTP код оруулна уу'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Find valid OTP code
+    try:
+        otp = OTPCode.objects.filter(
+            phone_or_email=phone_or_email,
+            otp_code=otp_code,
+            is_used=False
+        ).order_by('-created_at').first()
+        
+        if not otp:
+            return Response({
+                'error': 'OTP код буруу байна'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if otp.is_expired():
+            return Response({
+                'error': 'OTP код хүчинтэй хугацаа дууссан'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Mark OTP as used
+        otp.is_used = True
+        otp.save()
+        
+        # Check if user exists
+        is_email = '@' in phone_or_email
+        if is_email:
+            user = User.objects.filter(email=phone_or_email).first()
+        else:
+            # For phone, we'll use email field to store phone
+            user = User.objects.filter(email=phone_or_email).first()
+        
         if user:
+            # Login existing user
             login(request, user)
             return Response({
-                'message': 'Login successful',
+                'message': 'Амжилттай нэвтэрлээ',
                 'user': UserSerializer(user).data
             })
         else:
+            # Signup new user
+            if not username:
+                # Generate username from phone/email
+                if is_email:
+                    username = phone_or_email.split('@')[0]
+                else:
+                    username = f"user_{phone_or_email[-4:]}"
+            
+            # Check if username already exists
+            base_username = username
+            counter = 1
+            while User.objects.filter(username=username).exists():
+                username = f"{base_username}{counter}"
+                counter += 1
+            
+            # Create new user
+            user = User.objects.create_user(
+                username=username,
+                email=phone_or_email if is_email else phone_or_email,
+                password=None  # No password for OTP-based auth
+            )
+            
+            # Set a random password (required by Django)
+            user.set_unusable_password()
+            user.save()
+            
+            login(request, user)
+            
             return Response({
-                'error': 'Invalid credentials'
-            }, status=status.HTTP_401_UNAUTHORIZED)
-    else:
+                'message': 'Бүртгэл амжилттай үүслээ',
+                'user': UserSerializer(user).data
+            }, status=status.HTTP_201_CREATED)
+            
+    except Exception as e:
         return Response({
-            'error': 'Username and password required'
-        }, status=status.HTTP_400_BAD_REQUEST)
+            'error': f'Алдаа гарлаа: {str(e)}'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def login_view(request):
+    """Legacy login view - kept for backward compatibility but redirects to OTP"""
+    return Response({
+        'error': 'OTP код ашиглана уу',
+        'message': 'Энэ endpoint ашиглахгүй болсон. /api/send-otp/ болон /api/verify-otp/ ашиглана уу.'
+    }, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -310,34 +541,111 @@ def logout_view(request):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def signup_view(request):
-    username = request.data.get('username')
-    email = request.data.get('email')
-    password = request.data.get('password')
-    
-    if not all([username, email, password]):
-        return Response({
-            'error': 'Username, email, and password are required'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
-    if User.objects.filter(username=username).exists():
-        return Response({
-            'error': 'Username already exists'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
-    if User.objects.filter(email=email).exists():
-        return Response({
-            'error': 'Email already exists'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
-    user = User.objects.create_user(
-        username=username,
-        email=email,
-        password=password
-    )
-    
-    # The post_save signal will automatically create 300 free credits
-    
+    """Legacy signup view - kept for backward compatibility but redirects to OTP"""
     return Response({
-        'message': 'User created successfully',
-        'user': UserSerializer(user).data
-    }, status=status.HTTP_201_CREATED)
+        'error': 'OTP код ашиглана уу',
+        'message': 'Энэ endpoint ашиглахгүй болсон. /api/send-otp/ болон /api/verify-otp/ ашиглана уу.'
+    }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([permissions.AllowAny])
+def qpay_webhook_view(request):
+    """QPay webhook to handle payment confirmations"""
+    from django.http import HttpResponse
+    
+    # Get invoice ID from query parameter or request body
+    invoice_id = request.GET.get('invoiceid') or request.data.get('invoiceid')
+    
+    if not invoice_id:
+        return HttpResponse('invoiceid шаардлагатай', status=400)
+    
+    try:
+        # Try to find order by order.id (sender_invoice_no) or qpay_invoice_id
+        try:
+            order = Order.objects.get(id=int(invoice_id), status='pending')
+        except (Order.DoesNotExist, ValueError):
+            # If not found by order.id, try by qpay_invoice_id
+            order = Order.objects.get(qpay_invoice_id=invoice_id, status='pending')
+    except Order.DoesNotExist:
+        return HttpResponse('Order олдсонгүй эсвэл аль хэдийн боловсруулагдсан', status=404)
+    
+    # Verify payment with QPay
+    if not order.qpay_invoice_id:
+        return HttpResponse('Order дээр QPay invoice ID байхгүй байна', status=400)
+    
+    try:
+        access_token = get_qpay_access_token()
+        bearer_token = f"Bearer {access_token}"
+        
+        # Check invoice status
+        check_url = f"https://merchant.qpay.mn/v2/payment/check"
+        check_headers = {
+            'Content-Type': 'application/json',
+            'Authorization': bearer_token,
+        }
+        check_body = {
+            "object_type": "INVOICE",
+            "object_id": order.qpay_invoice_id
+        }
+        
+        check_response = requests.post(
+            check_url,
+            headers=check_headers,
+            data=json.dumps(check_body)
+        )
+        
+        if check_response.status_code == 200:
+            check_data = json.loads(check_response.text)
+            
+            # Check if payment was successful
+            if check_data.get('paid_amount', 0) >= order.amount:
+                # Update order status
+                order.status = 'paid'
+                order.save()
+                
+                # Add credits to user account
+                CreditTransaction.objects.create(
+                    user=order.user,
+                    amount=order.package.credits,
+                    transaction_type='add',
+                    description=f'Purchased {order.package.name} package - {order.package.credits} credits'
+                )
+                
+                return HttpResponse('qPay_webHookTest')
+            else:
+                return HttpResponse('Төлбөр хангалтгүй байна', status=400)
+        else:
+            return HttpResponse(f'QPay төлбөрийн статус шалгахэд алдаа: {check_response.text}', status=500)
+            
+    except Exception as e:
+        return HttpResponse(f'Webhook боловсруулах явцад алдаа: {str(e)}', status=500)
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def check_order_status_view(request):
+    """Check order payment status"""
+    order_id = request.GET.get('order_id')
+    
+    if not order_id:
+        return Response({
+            'error': 'order_id шаардлагатай'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        order = Order.objects.get(id=int(order_id), user=request.user)
+        return Response({
+            'order_id': order.id,
+            'status': order.status,
+            'is_paid': order.status == 'paid',
+            'credits': order.package.credits if order.status == 'paid' else 0
+        })
+    except Order.DoesNotExist:
+        return Response({
+            'error': 'Order олдсонгүй'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except ValueError:
+        return Response({
+            'error': 'Буруу order_id'
+        }, status=status.HTTP_400_BAD_REQUEST)

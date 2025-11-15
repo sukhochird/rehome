@@ -1,4 +1,4 @@
-# AIinterior - AI Interior Design Generator
+# Rehome Today - AI Interior Design Generator
 
 A web application where users can upload photos of their rooms and generate new interior design renders using AI (Google Gemini 2.5 Flash Image). The system displays before-and-after comparison images side by side with an interactive slider.
 

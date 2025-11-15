@@ -1,0 +1,159 @@
+###  QPay authentication
+```python
+def get_qpay_access_token():
+    url = "https://merchant.qpay.mn/v2/auth/token"
+    response = requests.post(url, auth=('WONCARGO', 'jwd49hh4'))
+    access_token = json.loads(response.text)['access_token']
+    return access_token
+```
+
+### Create invoice example
+```python
+access_token = get_qpay_access_token()
+        barrier_token = f"Bearer {access_token}"
+        url = "https://merchant.qpay.mn/v2/invoice"
+        callback_url = f"https://cargo.goodprice.mn/webhook?invoiceid={invoice_id}"
+
+        request_body = {
+            "invoice_code": "GOODPRICE_CARGO_INVOICE",
+            "sender_invoice_no": invoice_id,
+            "invoice_receiver_code": "terminal",
+            "invoice_description": "- GoodPrice Cargo delivery",
+            "sender_branch_code": "Delivery",
+            "amount": str(int(total_pay)),
+            "callback_url": callback_url
+        }
+
+        request_headers = {
+            'Content-Type': 'application/json',
+            'Authorization': barrier_token,
+        }
+        response_data = requests.request("POST", url, headers=request_headers, data=json.dumps(request_body)).text
+        response_json = json.loads(response_data)
+```
+
+### Invoice response example
+```json
+{
+    "invoice_id": "d3f9d54e-eff1-4ecc-8acb-6aa4a0cc1dd1",
+    "qr_text": "0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2",
+    "qr_image": "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",
+    "qPay_shortUrl": "https://s.qpay.mn/aWoWIcZctK",
+    "urls": [
+        {
+            "name": "qPay wallet",
+            "description": "qPay хэтэвч",
+            "logo": "https://s3.qpay.mn/p/e9bbdc69-3544-4c2f-aff0-4c292bc094f6/launcher-icon-ios.jpg",
+            "link": "qpaywallet://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Khan bank",
+            "description": "Хаан банк",
+            "logo": "https://qpay.mn/q/logo/khanbank.png",
+            "link": "khanbank://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "State bank 3.0",
+            "description": "Төрийн банк 3.0",
+            "logo": "https://qpay.mn/q/logo/state_3.png",
+            "link": "statebankmongolia://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Xac bank",
+            "description": "Хас банк",
+            "logo": "https://qpay.mn/q/logo/xacbank.png",
+            "link": "xacbank://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Trade and Development bank",
+            "description": "TDB online",
+            "logo": "https://qpay.mn/q/logo/tdbbank.png",
+            "link": "tdbbank://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Social Pay",
+            "description": "Голомт банк",
+            "logo": "https://qpay.mn/q/logo/socialpay.png",
+            "link": "socialpay-payment://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Most money",
+            "description": "МОСТ мони",
+            "logo": "https://qpay.mn/q/logo/most.png",
+            "link": "most://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "National investment bank",
+            "description": "Үндэсний хөрөнгө оруулалтын банк",
+            "logo": "https://qpay.mn/q/logo/nibank.jpeg",
+            "link": "nibank://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Chinggis khaan bank",
+            "description": "Чингис Хаан банк",
+            "logo": "https://qpay.mn/q/logo/ckbank.png",
+            "link": "ckbank://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Capitron bank",
+            "description": "Капитрон банк",
+            "logo": "https://qpay.mn/q/logo/capitronbank.png",
+            "link": "capitronbank://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Bogd bank",
+            "description": "Богд банк",
+            "logo": "https://qpay.mn/q/logo/bogdbank.png",
+            "link": "bogdbank://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Trans bank",
+            "description": "Тээвэр хөгжлийн банк",
+            "logo": "https://qpay.mn/q/logo/transbank.png",
+            "link": "transbank://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "M bank",
+            "description": "М банк",
+            "logo": "https://qpay.mn/q/logo/mbank.png",
+            "link": "mbank://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Ard App",
+            "description": "Ард Апп",
+            "logo": "https://qpay.mn/q/logo/ardapp.png",
+            "link": "ard://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Toki App",
+            "description": "Toki App",
+            "logo": "https://qpay.mn/q/logo/toki.png",
+            "link": "toki://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Arig bank",
+            "description": "Ариг банк",
+            "logo": "https://qpay.mn/q/logo/arig.png",
+            "link": "arig://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Monpay",
+            "description": "Мон Пэй",
+            "logo": "https://qpay.mn/q/logo/monpay.png",
+            "link": "Monpay://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Hipay",
+            "description": "Hipay",
+            "logo": "https://qpay.mn/q/logo/hipay.png",
+            "link": "hipay://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        },
+        {
+            "name": "Happy Pay",
+            "description": "Happy Pay MN",
+            "logo": "https://qpay.mn/q/logo/tdbwallet.png",
+            "link": "tdbwallet://q?qPay_QRcode=0002010102121531279404962794049600251111575206927540014A00000084300010108AGMOMNUB0220S6-Mqxn1hs7ngkoNzRTI520459995303496540410005802MN5909SUKHOCHIR6011ULAANBAATAR62240720S6-Mqxn1hs7ngkoNzRTI7106QPP_QR7815678406475999103790222800201630465B2"
+        }
+    ]
+}
+```

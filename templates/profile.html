@@ -3,30 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - AIinterior</title>
+    <title>Профайл - Rehome Today</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
                     colors: {
                         'primary': {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            300: '#cbd5e1',
-                            400: '#94a3b8',
-                            500: '#64748b',
-                            600: '#475569',
-                            700: '#334155',
-                            800: '#1e293b',
-                            900: '#0f172a',
+                            50: '#f3e8ff',
+                            100: '#e9d5ff',
+                            200: '#d8b4fe',
+                            300: '#c084fc',
+                            400: '#a855f7',
+                            500: '#9333ea',
+                            600: '#7e22ce',
+                            700: '#6b21a8',
+                            800: '#581c87',
+                            900: '#4c1d95',
                         }
                     }
                 }
             }
         }
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -34,7 +38,7 @@
         }
     </style>
 </head>
-<body>
+<body class="font-sans bg-gray-900 text-white antialiased">
 <script>
     // Authentication check
     fetch('/api/dashboard/')
@@ -49,117 +53,123 @@
 </script>
 
 <!-- Site Header -->
-<header class="bg-white border-b border-gray-200 h-16 fixed top-0 left-0 right-0 z-10">
+<header class="bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 h-16 fixed top-0 left-0 right-0 z-10">
     <div class="max-w-7xl mx-auto px-8 h-full flex justify-between items-center">
-        <a href="/app/" class="flex items-center hover:opacity-80 transition-opacity">
-            <div class="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
-                <span class="text-white font-bold text-sm">G</span>
+        <a href="/" class="flex items-center hover:opacity-80 transition-opacity">
+            <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
+                <span class="text-white font-bold text-sm">R</span>
             </div>
-            <span class="ml-2 text-xl font-bold text-gray-900">AIinterior</span>
+            <span class="ml-2 text-xl font-bold text-white">ReHome AI</span>
         </a>
         <div class="flex items-center space-x-4">
-            <div class="flex items-center bg-gray-100 px-4 py-2 rounded-lg">
-                <span class="text-sm text-gray-600 mr-2">Free plan</span>
-                <span class="text-sm font-semibold text-gray-900">Кредит: <span id="credit-balance">3</span></span>
+            <div class="flex items-center bg-gray-800 px-4 py-2 rounded-lg border border-gray-700">
+                <span class="text-sm text-gray-400 mr-2">Free plan</span>
+                <span class="text-sm font-semibold text-white">Кредит: <span id="credit-balance">3</span></span>
             </div>
-            <a href="/app/profile/" class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-                <div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
+            <a href="/app/profile/" class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer">
+                <div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
                     <span class="text-white font-semibold text-sm" id="user-initial">U</span>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-sm font-semibold text-gray-900" id="header-username">User</span>
-                    <span class="text-xs text-gray-500" id="header-email">email@example.com</span>
+                    <span class="text-sm font-semibold text-white" id="header-username">User</span>
+                    <span class="text-xs text-gray-400" id="header-email">email@example.com</span>
                 </div>
-                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
             </a>
-            <button onclick="logout()" class="text-gray-600 hover:text-gray-900">
+            <a href="/logout/" class="text-gray-400 hover:text-white transition-colors" title="Гарах">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                 </svg>
-            </button>
+            </a>
         </div>
     </div>
 </header>
 
 <!-- Main Content Area -->
-<div class="min-h-screen bg-white pt-16">
+<div class="min-h-screen bg-gray-900 pt-16">
     <div class="max-w-7xl mx-auto px-8 py-8">
         <div class="flex gap-8">
             <!-- Side Menu -->
-            <aside class="w-64 bg-white flex-shrink-0 self-start sticky top-24">
+            <aside class="w-64 bg-gray-800 rounded-xl border border-gray-700 flex-shrink-0 self-start sticky top-24">
                 <nav class="flex-1 p-4 space-y-1">
-                    <a href="/app/" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <a href="/app/" class="flex items-center px-4 py-2.5 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                         </svg>
                         <span class="text-sm font-medium">Нүүр</span>
                     </a>
-                    <a href="/app/" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <a href="/app/" class="flex items-center px-4 py-2.5 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                         </svg>
-                        <span class="text-sm font-medium">Render</span>
+                        <span class="text-sm font-medium">Интерьер</span>
                     </a>
-                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <div class="flex items-center px-4 py-2.5 text-gray-500 opacity-50 cursor-not-allowed rounded-lg">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
                         </svg>
                         <span class="text-sm font-medium">Сайжруулах</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <span class="ml-auto text-xs text-gray-500">Удахгүй</span>
+                    </div>
+                    <div class="flex items-center px-4 py-2.5 text-gray-500 opacity-50 cursor-not-allowed rounded-lg">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
                         </svg>
                         <span class="text-sm font-medium">Өнгөт болгох</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <span class="ml-auto text-xs text-gray-500">Удахгүй</span>
+                    </div>
+                    <div class="flex items-center px-4 py-2.5 text-gray-500 opacity-50 cursor-not-allowed rounded-lg">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                         </svg>
                         <span class="text-sm font-medium">Байршуулах</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <span class="ml-auto text-xs text-gray-500">Удахгүй</span>
+                    </div>
+                    <div class="flex items-center px-4 py-2.5 text-gray-500 opacity-50 cursor-not-allowed rounded-lg">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                         </svg>
                         <span class="text-sm font-medium">Засварлах</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <span class="ml-auto text-xs text-gray-500">Удахгүй</span>
+                    </div>
+                    <div class="flex items-center px-4 py-2.5 text-gray-500 opacity-50 cursor-not-allowed rounded-lg">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                         </svg>
                         <span class="text-sm font-medium">Moodboard</span>
-                    </a>
-                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <span class="ml-auto text-xs text-gray-500">Удахгүй</span>
+                    </div>
+                    <div class="flex items-center px-4 py-2.5 text-gray-500 opacity-50 cursor-not-allowed rounded-lg">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <span class="text-sm font-medium">Видео</span>
-                    </a>
+                        <span class="ml-auto text-xs text-gray-500">Удахгүй</span>
+                    </div>
                 </nav>
 
                 <!-- Secondary Navigation -->
-                <div class="p-4 border-t border-gray-200 space-y-1">
-                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                <div class="p-4 border-t border-gray-700 space-y-1">
+                    <a href="#" class="flex items-center px-4 py-2.5 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
                         <span class="text-sm font-medium">Заавар</span>
                     </a>
-                    <a href="#" onclick="openAccountModal(); return false;" class="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <a href="#" onclick="openAccountModal(); return false;" class="flex items-center px-4 py-2.5 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <span class="text-sm font-medium">Түүх</span>
                     </a>
-                    <a href="/app/profile/" class="flex items-center px-4 py-2.5 bg-orange-50 text-orange-600 rounded-lg">
+                    <a href="/app/profile/" class="flex items-center px-4 py-2.5 bg-primary-600 text-white rounded-lg">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
-                        <span class="text-sm font-medium">Profile</span>
+                        <span class="text-sm font-medium">Профайл</span>
                     </a>
                 </div>
             </aside>
@@ -169,15 +179,15 @@
                 <div class="space-y-8">
                     <!-- Page Title -->
                     <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900">Profile</h1>
-                        <p class="text-gray-600 mt-2">Таны мэдээлэл болон үйл ажиллагаа</p>
+                        <h1 class="text-3xl font-bold text-white">Профайл</h1>
+                        <p class="text-gray-400 mt-2">Таны мэдээлэл болон үйл ажиллагаа</p>
                     </div>
 
                     <!-- User Info Section -->
                     <div class="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-4">
-                                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                <div class="w-16 h-16 bg-gray-800 bg-opacity-20 rounded-full flex items-center justify-center">
                                     <span class="text-white font-bold text-2xl" id="profile-user-initial">U</span>
                                 </div>
                                 <div>
@@ -194,58 +204,58 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <!-- Credits Section -->
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="bg-gray-800 rounded-xl shadow-sm border border-gray-700 p-6">
                             <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-lg font-semibold text-gray-900">Кредит</h3>
+                                <h3 class="text-lg font-semibold text-white">Кредит</h3>
                                 <button onclick="purchaseCredits()" class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors">
                                     Кредит худалдаж авах
                                 </button>
                             </div>
                             <div class="space-y-4">
-                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center justify-between p-4 bg-gray-700 rounded-lg">
                                     <span class="text-gray-700 font-medium">Одоогийн баланс:</span>
-                                    <span class="text-3xl font-bold text-gray-900" id="modal-credit-balance">0</span>
+                                    <span class="text-3xl font-bold text-white" id="modal-credit-balance">0</span>
                                 </div>
-                                <p class="text-sm text-gray-500">Зураг үүсгэх бүрт 1 кредит зарцуулна</p>
+                                <p class="text-sm text-gray-400">Зураг үүсгэх бүрт 1 кредит зарцуулна</p>
                             </div>
                         </div>
 
                         <!-- Account Info Section -->
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-6">Аккаунтын мэдээлэл</h3>
+                        <div class="bg-gray-800 rounded-xl shadow-sm border border-gray-700 p-6">
+                            <h3 class="text-lg font-semibold text-white mb-6">Аккаунтын мэдээлэл</h3>
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Хэрэглэгчийн нэр</label>
-                                    <p class="text-gray-900 font-medium" id="account-username-display">-</p>
+                                    <p class="text-white font-medium" id="account-username-display">-</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Имэйл</label>
-                                    <p class="text-gray-900 font-medium" id="account-email-display">-</p>
+                                    <p class="text-white font-medium" id="account-email-display">-</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Бүртгүүлсэн огноо</label>
-                                    <p class="text-gray-500 text-sm" id="account-date-joined">-</p>
+                                    <p class="text-gray-400 text-sm" id="account-date-joined">-</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Generated Designs -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="bg-gray-800 rounded-xl shadow-sm border border-gray-700 p-6">
                         <div class="mb-6">
-                            <h3 class="text-lg font-semibold text-gray-900">Таны үүсгэсэн дизайнууд</h3>
-                            <p class="text-sm text-gray-500 mt-1">Бүх үүсгэсэн дизайнууд</p>
+                            <h3 class="text-lg font-semibold text-white">Таны үүсгэсэн дизайнууд</h3>
+                            <p class="text-sm text-gray-400 mt-1">Бүх үүсгэсэн дизайнууд</p>
                         </div>
                         <div class="p-6">
                             <div id="images-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <div class="text-center py-12 text-gray-500">Ачааллаж байна...</div>
+                                <div class="text-center py-12 text-gray-400">Ачааллаж байна...</div>
                             </div>
                             <div id="no-images" class="text-center py-12 hidden">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                <h3 class="mt-2 text-sm font-medium text-gray-900">Одоогоор дизайн байхгүй</h3>
-                                <p class="mt-1 text-sm text-gray-500">Эхний дизайнаа үүсгээд эхэлнэ үү.</p>
+                                <h3 class="mt-2 text-sm font-medium text-white">Одоогоор дизайн байхгүй</h3>
+                                <p class="mt-1 text-sm text-gray-400">Эхний дизайнаа үүсгээд эхэлнэ үү.</p>
                                 <a href="/app/" class="mt-4 inline-block bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors">
                                     Дизайн үүсгэх
                                 </a>
@@ -254,13 +264,13 @@
                     </div>
 
                     <!-- Recent Transactions -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="bg-gray-800 rounded-xl shadow-sm border border-gray-700 p-6">
                         <div class="mb-6">
-                            <h3 class="text-lg font-semibold text-gray-900">Кредитын гүйлгээний түүх</h3>
-                            <p class="text-sm text-gray-500 mt-1">Бүх кредитын гүйлгээний мэдээлэл</p>
+                            <h3 class="text-lg font-semibold text-white">Кредитын гүйлгээний түүх</h3>
+                            <p class="text-sm text-gray-400 mt-1">Бүх кредитын гүйлгээний мэдээлэл</p>
                         </div>
                         <div class="divide-y divide-gray-200" id="transactions-list">
-                            <div class="px-4 py-8 text-gray-500 text-center">Ачааллаж байна...</div>
+                            <div class="px-4 py-8 text-gray-400 text-center">Ачааллаж байна...</div>
                         </div>
                     </div>
                 </div>
@@ -270,21 +280,82 @@
 </div>
 
 <!-- Purchase Credits Modal -->
-<div id="purchase-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+<div id="purchase-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden z-50">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full border border-gray-700 max-h-[90vh] overflow-y-auto">
             <div class="p-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Кредит худалдаж авах</h3>
-                <p class="text-gray-600 mb-4">
-                    10 кредит 5,000 MNT-өөр худалдаж авах.
-                </p>
-                <div class="flex justify-end space-x-3">
-                    <button onclick="closePurchaseModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
-                        Цуцлах
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-white">Кредит худалдаж авах</h3>
+                    <button onclick="closePurchaseModal()" class="text-gray-400 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
                     </button>
-                    <button onclick="confirmPurchase()" class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">
-                        10 Кредит худалдаж авах
+                </div>
+                <div id="packages-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-visible">
+                    <div class="text-center text-gray-400 py-8">Багцуудыг ачаалж байна...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- QPay Payment Modal -->
+<div id="qpay-payment-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden z-70">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full border border-gray-700 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-white">Төлбөр төлөх</h3>
+                    <button onclick="closeQPayPaymentModal()" class="text-gray-400 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
                     </button>
+                </div>
+
+                <!-- Loading State -->
+                <div id="qpay-loading" class="text-center py-12">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
+                    <p class="text-gray-300">Төлбөрийн мэдээлэл бэлдэж байна...</p>
+                </div>
+
+                <!-- QR Code Section -->
+                <div id="qpay-qr-section" class="hidden text-center mb-6">
+                    <p class="text-gray-300 mb-4">QR код уншуулах эсвэл доорх холбоос дарах</p>
+                    <div class="bg-white p-4 rounded-lg inline-block mb-4">
+                        <img id="qpay-qr-image" src="" alt="QPay QR Code" class="w-64 h-64">
+                    </div>
+                    <div class="mb-4">
+                        <a id="qpay-short-url" href="#" target="_blank" class="text-primary-400 hover:text-primary-300 text-sm underline">
+                            QPay холбоос
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Payment Apps Section -->
+                <div id="qpay-apps-section" class="hidden">
+                    <h4 class="text-lg font-semibold text-white mb-4">Төлбөрийн апп сонгох</h4>
+                    <div id="qpay-apps-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- Payment apps will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div id="qpay-error" class="hidden text-center py-8">
+                    <div class="bg-red-900/50 border border-red-700 rounded-lg p-4">
+                        <p class="text-red-300"></p>
+                    </div>
+                </div>
+
+                <!-- Success State -->
+                <div id="qpay-success" class="hidden text-center py-8">
+                    <div class="bg-green-900/50 border border-green-700 rounded-lg p-4">
+                        <svg class="w-12 h-12 text-green-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-green-300 font-semibold" id="qpay-success-credits">Төлбөр амжилттай төлөгдлөө!</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -349,12 +420,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('transactions-list');
         
         if (transactions.length === 0) {
-            container.innerHTML = '<div class="px-4 py-8 text-gray-500 text-center">Гүйлгээ байхгүй</div>';
+            container.innerHTML = '<div class="px-4 py-8 text-gray-400 text-center">Гүйлгээ байхгүй</div>';
             return;
         }
         
         container.innerHTML = transactions.map(transaction => {
-            const typeClass = transaction.transaction_type === 'add' ? 'text-green-600' : 'text-red-600';
+            const typeClass = transaction.transaction_type === 'add' ? 'text-green-400' : 'text-red-400';
             const typeIcon = transaction.transaction_type === 'add' ? '+' : '-';
             const date = new Date(transaction.created_at).toLocaleDateString('mn-MN', {
                 year: 'numeric',
@@ -365,16 +436,16 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             return `
-                <div class="px-4 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <div class="px-4 py-4 flex items-center justify-between hover:bg-gray-600 transition-colors">
                     <div class="flex items-center space-x-4">
                         <div class="flex-shrink-0">
-                            <div class="w-10 h-10 ${transaction.transaction_type === 'add' ? 'bg-green-100' : 'bg-red-100'} rounded-full flex items-center justify-center">
+                            <div class="w-10 h-10 ${transaction.transaction_type === 'add' ? 'bg-green-900' : 'bg-red-900'} rounded-full flex items-center justify-center">
                                 <span class="text-lg font-medium ${typeClass}">${typeIcon}</span>
                             </div>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-900">${transaction.description || 'Гүйлгээ'}</p>
-                            <p class="text-sm text-gray-500">${date}</p>
+                            <p class="text-sm font-medium text-white">${transaction.description || 'Гүйлгээ'}</p>
+                            <p class="text-sm text-gray-400">${date}</p>
                         </div>
                     </div>
                     <div class="text-right">
@@ -405,18 +476,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const imageId = `image-${index}`;
             
             return `
-                <div class="bg-gray-50 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer image-card" 
+                <div class="bg-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer image-card" 
                      data-original="${image.original_image}" 
                      data-generated="${image.generated_image}" 
                      data-style="${image.style}">
-                    <div class="aspect-w-16 aspect-h-12 bg-gray-200">
+                    <div class="aspect-w-16 aspect-h-12 bg-gray-600">
                         <img src="${image.generated_image}" alt="Generated design" class="w-full h-48 object-cover">
                     </div>
                     <div class="p-4">
-                        <h4 class="text-sm font-medium text-gray-900 capitalize">${image.style} Загвар</h4>
-                        ${image.room_type ? `<p class="text-xs text-gray-500 mt-1">${image.room_type}</p>` : ''}
-                        <p class="text-sm text-gray-500 mt-1">${date}</p>
-                        <button class="compare-btn mt-2 text-primary-600 hover:text-primary-700 text-sm font-medium" 
+                        <h4 class="text-sm font-medium text-white capitalize">${image.style} Загвар</h4>
+                        ${image.room_type ? `<p class="text-xs text-gray-400 mt-1">${image.room_type}</p>` : ''}
+                        <p class="text-sm text-gray-400 mt-1">${date}</p>
+                        <button class="compare-btn mt-2 text-primary-400 hover:text-primary-300 text-sm font-medium" 
                                 data-original="${image.original_image}" 
                                 data-generated="${image.generated_image}" 
                                 data-style="${image.style}">
@@ -462,15 +533,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function purchaseCredits() {
-        document.getElementById('purchase-modal').classList.remove('hidden');
-    }
+    // Global variables for payment
+    let currentOrderId = null;
+    let paymentPollingInterval = null;
 
-    function closePurchaseModal() {
+    // Make functions globally accessible
+    window.purchaseCredits = async function() {
+        console.log('purchaseCredits called');
+        const modal = document.getElementById('purchase-modal');
+        if (!modal) {
+            console.error('Purchase modal not found');
+            return;
+        }
+        modal.classList.remove('hidden');
+        console.log('Modal should be visible now');
+        await loadPackagesForPurchase();
+    };
+
+    window.closePurchaseModal = function() {
         document.getElementById('purchase-modal').classList.add('hidden');
-    }
+    };
 
-    async function confirmPurchase() {
+    window.purchasePackage = async function(packageId) {
+        // Close purchase modal
+        closePurchaseModal();
+        
+        // Show QPay payment modal
+        openQPayPaymentModal();
+        showQPayLoading();
+        
         try {
             const response = await fetch('/api/purchase-credits/', {
                 method: 'POST',
@@ -479,23 +570,233 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-CSRFToken': getCookie('csrftoken'),
                 },
                 body: JSON.stringify({
-                    amount: 10
+                    package_id: packageId
                 })
             });
             
             const data = await response.json();
             
-            if (response.ok) {
-                closePurchaseModal();
-                loadAccountData(); // Reload data
-                alert('10 кредит амжилттай худалдаж авлаа!');
+            if (response.ok && data.qpay_invoice && data.order) {
+                // Store order ID for polling
+                currentOrderId = data.order.id;
+                // Show QPay payment info
+                showQPayPayment(data.qpay_invoice);
+                // Start polling for payment status
+                startPaymentPolling();
             } else {
-                alert('Алдаа: ' + (data.error || 'Алдаа гарлаа'));
+                showQPayError(data.error || 'Төлбөрийн мэдээлэл авахад алдаа гарлаа');
             }
         } catch (error) {
-            alert('Алдаа: ' + error.message);
+            console.error('Error purchasing package:', error);
+            showQPayError('Сүлжээний алдаа. Дахин оролдоно уу.');
+        }
+    };
+
+    // Load packages for purchase modal
+    async function loadPackagesForPurchase() {
+        try {
+            const response = await fetch('/api/packages/');
+            const data = await response.json();
+            
+            const container = document.getElementById('packages-list');
+            if (!container) return;
+            
+            if (data.packages && data.packages.length > 0) {
+                container.innerHTML = '';
+                
+                data.packages.forEach((pkg, index) => {
+                    const isPopular = index === 1; // Second package is popular
+                    const packageCard = document.createElement('div');
+                    packageCard.className = `bg-gray-700 rounded-lg p-6 border ${isPopular ? 'border-2 border-primary-500' : 'border-gray-600'} hover:border-primary-500 transition-colors relative overflow-visible`;
+                    
+                    let badgeHtml = '';
+                    if (isPopular) {
+                        badgeHtml = `
+                            <div class="absolute -top-3 left-4 bg-primary-500 text-white text-xs px-3 py-1.5 rounded-full font-semibold z-10 shadow-lg">
+                                Эрэлттэй
+                            </div>
+                        `;
+                    }
+                    
+                    packageCard.innerHTML = `
+                        ${badgeHtml}
+                        <div class="text-center mb-4">
+                            <h4 class="text-xl font-bold text-white mb-2">${pkg.name}</h4>
+                            <div class="text-3xl font-bold text-white mb-1">${pkg.price.toLocaleString()}₮</div>
+                            <p class="text-gray-400 text-sm">${pkg.credits} кредит</p>
+                        </div>
+                        <ul class="space-y-2 mb-4 text-sm text-gray-300">
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                </svg>
+                                ${pkg.credits} кредит
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                </svg>
+                                Бүх төрлийн интерьер
+                            </li>
+                        </ul>
+                        <button onclick="purchasePackage(${pkg.id})" class="w-full ${isPopular ? 'bg-primary-600 hover:bg-primary-700' : 'bg-gray-600 hover:bg-gray-500'} text-white py-2 rounded-lg font-semibold transition-colors">
+                            Сонгох
+                        </button>
+                    `;
+                    container.appendChild(packageCard);
+                });
+            } else {
+                container.innerHTML = '<div class="text-center text-gray-400 py-8 col-span-full">Багц олдсонгүй</div>';
+            }
+        } catch (error) {
+            console.error('Error loading packages:', error);
+            const container = document.getElementById('packages-list');
+            if (container) {
+                container.innerHTML = '<div class="text-center text-red-400 py-8 col-span-full">Багцуудыг ачаалахад алдаа гарлаа</div>';
+            }
         }
     }
+
+
+    // QPay Payment Modal functions
+    window.openQPayPaymentModal = function() {
+        document.getElementById('qpay-payment-modal').classList.remove('hidden');
+    };
+
+    window.closeQPayPaymentModal = function() {
+        document.getElementById('qpay-payment-modal').classList.add('hidden');
+        stopPaymentPolling();
+        // Reset modal state
+        document.getElementById('qpay-loading').classList.remove('hidden');
+        document.getElementById('qpay-qr-section').classList.add('hidden');
+        document.getElementById('qpay-apps-section').classList.add('hidden');
+        document.getElementById('qpay-error').classList.add('hidden');
+        document.getElementById('qpay-success').classList.add('hidden');
+        currentOrderId = null;
+    };
+
+    function showQPayLoading() {
+        document.getElementById('qpay-loading').classList.remove('hidden');
+        document.getElementById('qpay-qr-section').classList.add('hidden');
+        document.getElementById('qpay-apps-section').classList.add('hidden');
+        document.getElementById('qpay-error').classList.add('hidden');
+        document.getElementById('qpay-success').classList.add('hidden');
+    }
+
+    function showQPayPayment(qpayInvoice) {
+        document.getElementById('qpay-loading').classList.add('hidden');
+        document.getElementById('qpay-error').classList.add('hidden');
+        
+        // Show QR code
+        if (qpayInvoice.qr_image) {
+            document.getElementById('qpay-qr-image').src = 'data:image/png;base64,' + qpayInvoice.qr_image;
+            document.getElementById('qpay-qr-section').classList.remove('hidden');
+        }
+        
+        // Show short URL
+        if (qpayInvoice.qPay_shortUrl) {
+            const shortUrlLink = document.getElementById('qpay-short-url');
+            shortUrlLink.href = qpayInvoice.qPay_shortUrl;
+            shortUrlLink.textContent = qpayInvoice.qPay_shortUrl;
+        }
+        
+        // Show payment apps
+        if (qpayInvoice.urls && qpayInvoice.urls.length > 0) {
+            const appsGrid = document.getElementById('qpay-apps-grid');
+            appsGrid.innerHTML = '';
+            
+            qpayInvoice.urls.forEach(app => {
+                const appCard = document.createElement('a');
+                appCard.href = app.link;
+                appCard.target = '_blank';
+                appCard.className = 'bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition-colors text-center';
+                appCard.innerHTML = `
+                    <img src="${app.logo}" alt="${app.name}" class="w-12 h-12 mx-auto mb-2 rounded" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'48\\' height=\\'48\\'%3E%3Crect fill=\\'%234b5563\\' width=\\'48\\' height=\\'48\\'/%3E%3C/svg%3E'">
+                    <p class="text-white text-sm font-semibold">${app.name}</p>
+                    <p class="text-gray-400 text-xs mt-1">${app.description}</p>
+                `;
+                appsGrid.appendChild(appCard);
+            });
+            
+            document.getElementById('qpay-apps-section').classList.remove('hidden');
+        }
+    }
+
+    function showQPayError(message) {
+        document.getElementById('qpay-loading').classList.add('hidden');
+        document.getElementById('qpay-qr-section').classList.add('hidden');
+        document.getElementById('qpay-apps-section').classList.add('hidden');
+        document.getElementById('qpay-success').classList.add('hidden');
+        const errorDiv = document.getElementById('qpay-error');
+        errorDiv.classList.remove('hidden');
+        errorDiv.querySelector('p').textContent = message;
+        stopPaymentPolling();
+    }
+
+    function showQPaySuccess(credits) {
+        document.getElementById('qpay-loading').classList.add('hidden');
+        document.getElementById('qpay-qr-section').classList.add('hidden');
+        document.getElementById('qpay-apps-section').classList.add('hidden');
+        document.getElementById('qpay-error').classList.add('hidden');
+        document.getElementById('qpay-success').classList.remove('hidden');
+        document.getElementById('qpay-success-credits').textContent = `${credits} кредит дансанд нэмэгдлээ.`;
+        stopPaymentPolling();
+        
+        // Reload account data and close modal after 2 seconds
+        setTimeout(() => {
+            loadAccountData();
+            closeQPayPaymentModal();
+        }, 2000);
+    }
+
+    // Payment status polling
+    function startPaymentPolling() {
+        if (!currentOrderId) return;
+        
+        // Check immediately
+        checkPaymentStatus();
+        
+        // Then check every 3 seconds
+        paymentPollingInterval = setInterval(() => {
+            checkPaymentStatus();
+        }, 3000);
+    }
+
+    function stopPaymentPolling() {
+        if (paymentPollingInterval) {
+            clearInterval(paymentPollingInterval);
+            paymentPollingInterval = null;
+        }
+    }
+
+    async function checkPaymentStatus() {
+        if (!currentOrderId) return;
+        
+        try {
+            const response = await fetch(`/api/check-order-status/?order_id=${currentOrderId}`, {
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.is_paid) {
+                // Payment successful
+                showQPaySuccess(data.credits);
+            }
+        } catch (error) {
+            console.error('Error checking payment status:', error);
+            // Don't show error, just continue polling
+        }
+    }
+
+    // Close QPay modal on background click
+    document.getElementById('qpay-payment-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeQPayPaymentModal();
+        }
+    });
 
     // Comparison modal function (make it accessible globally)
     window.showComparison = function(originalImage, generatedImage, style) {
@@ -507,14 +808,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        const modalId = 'comparison-modal-' + Date.now();
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center p-4';
         modal.innerHTML = `
-            <div class="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-auto">
+            <div class="bg-gray-800 rounded-lg max-w-6xl w-full max-h-[90vh] overflow-auto">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-semibold text-gray-900">${style} Загварын харьцуулалт</h3>
-                        <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <h3 class="text-xl font-semibold text-white">${style} Загварын харьцуулалт</h3>
+                        <button onclick="document.getElementById('${modalId}').remove()" class="text-gray-400 hover:text-white transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
@@ -524,34 +826,76 @@ document.addEventListener('DOMContentLoaded', function() {
                         <!-- Before Image (Left) -->
                         <div class="space-y-2">
                             <div class="flex items-center justify-between">
-                                <h4 class="text-lg font-medium text-gray-900">Анхны</h4>
-                                <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Before</span>
+                                <h4 class="text-lg font-medium text-white">Анхны</h4>
+                                <span class="text-sm text-gray-400 bg-gray-700 px-3 py-1 rounded-full">Before</span>
                             </div>
-                            <div class="bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-300">
-                                <img src="${originalImage}" alt="Анхны зураг" class="w-full h-auto object-contain max-h-[600px]">
+                            <div class="bg-gray-700 rounded-lg overflow-hidden border-2 border-gray-600 relative" style="height: 500px; display: flex; align-items: center; justify-content: center;">
+                                <div class="absolute top-2 left-2 bg-gray-900/75 text-white px-3 py-1 rounded-md text-sm font-semibold z-10">
+                                    Original
+                                </div>
+                                <img id="${modalId}-original-img" src="${originalImage}" alt="Анхны зураг" class="w-full h-full object-cover">
                             </div>
                         </div>
                         <!-- After Image (Right) -->
                         <div class="space-y-2">
                             <div class="flex items-center justify-between">
-                                <h4 class="text-lg font-medium text-gray-900">${style} Загвар</h4>
-                                <span class="text-sm text-gray-500 bg-primary-100 px-3 py-1 rounded-full">After</span>
+                                <h4 class="text-lg font-medium text-white">${style} Загвар</h4>
+                                <span class="text-sm text-gray-400 bg-primary-600 px-3 py-1 rounded-full">After</span>
                             </div>
-                            <div class="bg-gray-100 rounded-lg overflow-hidden border-2 border-primary-500">
-                                <img src="${generatedImage}" alt="Үүсгэсэн зураг" class="w-full h-auto object-contain max-h-[600px]">
+                            <div class="bg-gray-700 rounded-lg overflow-hidden border-2 border-primary-500 relative" style="height: 500px; display: flex; align-items: center; justify-content: center;">
+                                <div class="absolute top-2 left-2 bg-gray-900/75 text-white px-3 py-1 rounded-md text-sm font-semibold z-10">
+                                    Generated
+                                </div>
+                                <img id="${modalId}-generated-img" src="${generatedImage}" alt="Үүсгэсэн зураг" class="w-full h-full object-cover">
+                                <!-- Watermark overlay -->
+                                <div class="absolute bottom-2 right-2 bg-black/60 text-white px-3 py-1.5 rounded-md text-xs font-medium z-10">
+                                    www.rehome.today
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-6 flex justify-center">
-                        <button onclick="this.closest('.fixed').remove()" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium">
+                    <!-- Download buttons -->
+                    <div class="mt-6 flex justify-center gap-3">
+                        <button id="${modalId}-download-generated-btn" class="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors font-semibold text-sm flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Generated Image татах
+                        </button>
+                        <button id="${modalId}-download-compared-btn" class="bg-gray-700 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors font-semibold text-sm flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Харьцуулсан зураг татах
+                        </button>
+                    </div>
+                    <div class="mt-4 flex justify-center">
+                        <button onclick="document.getElementById('${modalId}').remove()" class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors font-medium">
                             Хаах
                         </button>
                     </div>
                 </div>
             </div>
         `;
+        modal.id = modalId;
         
         document.body.appendChild(modal);
+        
+        // Add event listeners for download buttons
+        const downloadGeneratedBtn = document.getElementById(modalId + '-download-generated-btn');
+        const downloadComparedBtn = document.getElementById(modalId + '-download-compared-btn');
+        
+        if (downloadGeneratedBtn) {
+            downloadGeneratedBtn.addEventListener('click', function() {
+                downloadModalGeneratedImage(modalId, generatedImage);
+            });
+        }
+        
+        if (downloadComparedBtn) {
+            downloadComparedBtn.addEventListener('click', function() {
+                downloadModalComparedImage(modalId, originalImage, generatedImage);
+            });
+        }
         
         // Close modal when clicking outside
         modal.addEventListener('click', function(e) {
@@ -570,20 +914,168 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('keydown', escapeHandler);
     };
 
+    // Download functions for comparison modal (make globally accessible)
+    window.downloadModalGeneratedImage = function(modalId, imageUrl) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        
+        img.onload = () => {
+            // Create canvas to add watermark
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            // Draw the image
+            ctx.drawImage(img, 0, 0);
+            
+            // Add watermark
+            const watermarkText = 'www.rehome.today';
+            const fontSize = Math.max(16, img.width / 40);
+            ctx.font = `${fontSize}px Arial`;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            
+            // Measure text
+            const textMetrics = ctx.measureText(watermarkText);
+            const textWidth = textMetrics.width;
+            const textHeight = fontSize;
+            const padding = 10;
+            
+            // Draw background
+            ctx.fillRect(
+                img.width - textWidth - padding * 2,
+                img.height - textHeight - padding * 2,
+                textWidth + padding * 2,
+                textHeight + padding * 2
+            );
+            
+            // Draw text
+            ctx.fillStyle = 'white';
+            ctx.fillText(
+                watermarkText,
+                img.width - textWidth - padding,
+                img.height - padding
+            );
+            
+            // Download
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'rehome-generated-' + Date.now() + '.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        };
+        
+        img.onerror = () => {
+            // Fallback: download without watermark if CORS issue
+            const a = document.createElement('a');
+            a.href = imageUrl;
+            a.download = 'rehome-generated-' + Date.now() + '.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+        
+        img.src = imageUrl;
+    };
+
+    window.downloadModalComparedImage = function(modalId, originalImageUrl, generatedImageUrl) {
+        const img1 = new Image();
+        const img2 = new Image();
+        img1.crossOrigin = 'anonymous';
+        img2.crossOrigin = 'anonymous';
+        
+        let loadedCount = 0;
+        const onImageLoad = () => {
+            loadedCount++;
+            if (loadedCount === 2) {
+                // Both images loaded, create compared image
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Calculate dimensions - use same height for both images
+                const maxHeight = Math.max(img1.height, img2.height);
+                const scale1 = maxHeight / img1.height;
+                const scale2 = maxHeight / img2.height;
+                const scaledWidth1 = img1.width * scale1;
+                const scaledWidth2 = img2.width * scale2;
+                const totalWidth = scaledWidth1 + scaledWidth2;
+                
+                canvas.width = totalWidth;
+                canvas.height = maxHeight;
+                
+                // Fill background
+                ctx.fillStyle = '#374151'; // gray-700
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw original image (left)
+                ctx.drawImage(img1, 0, 0, scaledWidth1, maxHeight);
+                
+                // Draw generated image (right)
+                ctx.drawImage(img2, scaledWidth1, 0, scaledWidth2, maxHeight);
+                
+                // Add watermark to generated side
+                const watermarkText = 'www.rehome.today';
+                const fontSize = Math.max(16, maxHeight / 40);
+                ctx.font = `${fontSize}px Arial`;
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                
+                const textMetrics = ctx.measureText(watermarkText);
+                const textWidth = textMetrics.width;
+                const textHeight = fontSize;
+                const padding = 10;
+                
+                // Draw background
+                ctx.fillRect(
+                    scaledWidth1 + scaledWidth2 - textWidth - padding * 2,
+                    maxHeight - textHeight - padding * 2,
+                    textWidth + padding * 2,
+                    textHeight + padding * 2
+                );
+                
+                // Draw text
+                ctx.fillStyle = 'white';
+                ctx.fillText(
+                    watermarkText,
+                    scaledWidth1 + scaledWidth2 - textWidth - padding,
+                    maxHeight - padding
+                );
+                
+                // Download
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'rehome-compared-' + Date.now() + '.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+            }
+        };
+        
+        img1.onload = onImageLoad;
+        img2.onload = onImageLoad;
+        img1.onerror = () => {
+            alert('Анхны зураг ачаалж чадсангүй');
+        };
+        img2.onerror = () => {
+            alert('Үүсгэсэн зураг ачаалж чадсангүй');
+        };
+        
+        img1.src = originalImageUrl;
+        img2.src = generatedImageUrl;
+    };
+
     // Logout function
     function logout() {
-        fetch('/api/logout/', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(response => {
-            if (response.ok) {
-                window.location.href = '/';
-            }
-        });
+        window.location.href = '/logout/';
     }
 
     // Get CSRF token
@@ -611,3 +1103,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+

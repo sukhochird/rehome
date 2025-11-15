@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from core.models import CreditTransaction
+from core.models import CreditTransaction, Package
 
 
 class Command(BaseCommand):
@@ -30,6 +30,37 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(
                     self.style.WARNING(f'User already exists: {user.username}')
+                )
+
+        # Create default packages
+        packages = [
+            {'name': 'Small Package', 'credits': 10, 'price': 5000},
+            {'name': 'Medium Package', 'credits': 25, 'price': 10000},
+            {'name': 'Large Package', 'credits': 50, 'price': 18000},
+            {'name': 'Extra Large Package', 'credits': 100, 'price': 30000},
+        ]
+        
+        for package_data in packages:
+            package, created = Package.objects.get_or_create(
+                name=package_data['name'],
+                defaults={
+                    'credits': package_data['credits'],
+                    'price': package_data['price'],
+                    'is_active': True
+                }
+            )
+            if created:
+                self.stdout.write(
+                    self.style.SUCCESS(f'Created package: {package.name}')
+                )
+            else:
+                # Update existing package
+                package.credits = package_data['credits']
+                package.price = package_data['price']
+                package.is_active = True
+                package.save()
+                self.stdout.write(
+                    self.style.SUCCESS(f'Updated package: {package.name}')
                 )
 
         self.stdout.write(
